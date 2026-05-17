@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Basecamp — Communal Trip Planner</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- Loading overlay -->
+<div id="loading-overlay">
+  <div class="spinner"></div>
+  <div class="loading-msg">Connecting to Firestore…</div>
+</div>
+
+<!-- Header -->
+<header>
+  <div class="header-inner">
+    <div class="logo-icon">⛺</div>
+    <div class="logo-text">
+      <h1>Basecamp</h1>
+      <p>Communal trip planner</p>
+    </div>
+  </div>
+</header>
+
+<!-- HOME SCREEN -->
+<div id="screen-home" class="screen active">
+  <div class="wrap">
+    <div id="config-notice">
+      ⚠️ <strong>Firebase not configured yet.</strong> Open <code>app.js</code> and replace the <code>firebaseConfig</code> values with your project's config from the Firebase console.
+    </div>
+    <div class="home-grid">
+      <div class="home-card" onclick="showScreen('create')">
+        <span class="card-emoji">🗺️</span>
+        <h2>Create a Trip</h2>
+        <p>Start planning a new adventure. Set the type, camping preference, and auto-generate a gear list.</p>
+      </div>
+      <div class="home-card" onclick="showScreen('join')">
+        <span class="card-emoji">🤝</span>
+        <h2>Join a Trip</h2>
+        <p>Enter an existing trip name to join the crew and claim the gear you're bringing.</p>
+      </div>
+    </div>
+    <div class="trips-preview">
+      <div class="section-label"><span class="sync-dot"></span>Active Trips</div>
+      <div id="home-trips-list"><div class="empty-state">Loading trips…</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- CREATE SCREEN -->
+<div id="screen-create" class="screen">
+  <div class="wrap">
+    <div class="screen-title">Create a Trip</div>
+    <div class="screen-sub">Fill in the details — we'll generate a starter gear list for you.</div>
+    <div class="form-card">
+      <div class="field">
+        <label>Trip Name</label>
+        <input type="text" id="create-trip-name" placeholder="e.g. Red Rocks April Adventure">
+        <div class="err" id="err-trip-name">Please enter a trip name.</div>
+      </div>
+      <div class="field">
+        <label>Your Name</label>
+        <input type="text" id="create-your-name" placeholder="e.g. Alex">
+        <div class="err" id="err-your-name">Please enter your name.</div>
+      </div>
+      <div class="field">
+        <label>Trip Type</label>
+        <select id="create-trip-type">
+          <option value="">— Select a trip type —</option>
+          <option value="lead_climbing">🧗 Lead Climbing</option>
+          <option value="top_rope_climbing">🧗 Top Rope Climbing</option>
+          <option value="bouldering">🪨 Bouldering</option>
+          <option value="hiking">🥾 Hiking</option>
+          <option value="backpacking">🎒 Backpacking</option>
+          <option value="scuba_diving">🤿 Scuba Diving</option>
+          <option value="kayaking">🛶 Kayaking</option>
+          <option value="mountain_biking">🚵 Mountain Biking</option>
+          <option value="skiing">⛷️ Skiing / Snowboarding</option>
+          <option value="canyoneering">🏜️ Canyoneering</option>
+        </select>
+        <div class="err" id="err-trip-type">Please select a trip type.</div>
+      </div>
+      <div class="field">
+        <label>Camping Overnight?</label>
+        <label class="camping-toggle" id="camping-toggle" onclick="toggleCamping(event)">
+          <input type="checkbox" id="camping-check">
+          <div class="toggle-track"><div class="toggle-thumb"></div></div>
+          <div>
+            <div class="toggle-label" id="camping-label">No — Day Trip</div>
+            <div class="toggle-sub">Toggle to add camping gear</div>
+          </div>
+        </label>
+      </div>
+      <hr class="divider">
+      <div class="btn-row">
+        <button class="btn btn-primary" onclick="createTrip()">Generate Trip &amp; Gear List</button>
+        <button class="btn btn-ghost" onclick="showScreen('home')">← Back</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- JOIN SCREEN -->
+<div id="screen-join" class="screen">
+  <div class="wrap">
+    <div class="screen-title">Join a Trip</div>
+    <div class="screen-sub">Enter the trip name exactly as the creator named it.</div>
+    <div class="form-card">
+      <div class="field">
+        <label>Trip Name</label>
+        <input type="text" id="join-trip-name" placeholder="e.g. Red Rocks April Adventure">
+        <div class="err" id="err-join-trip">Trip not found. Check the name and try again.</div>
+      </div>
+      <div class="field">
+        <label>Your Name</label>
+        <input type="text" id="join-your-name" placeholder="e.g. Jordan">
+        <div class="err" id="err-join-name">Please enter your name.</div>
+      </div>
+      <hr class="divider">
+      <div class="btn-row">
+        <button class="btn btn-primary" onclick="joinTrip()">Join Trip</button>
+        <button class="btn btn-ghost" onclick="showScreen('home')">← Back</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TRIP VIEW SCREEN -->
+<div id="screen-trip" class="screen">
+  <div class="wrap">
+    <div id="trip-header-block"></div>
+    <div id="trip-status-strip"></div>
+    <div id="trip-progress-wrap"></div>
+    <div class="supplies-grid">
+      <div class="supply-panel">
+        <div class="panel-head">
+          <div class="panel-head-left">
+            <div class="panel-title">🎒 Gear Needed</div>
+            <span class="count-badge muted" id="needed-count">0</span>
+          </div>
+        </div>
+        <div class="supply-list" id="needed-list"></div>
+        <div class="add-item-row">
+          <input type="text" id="new-item-input" placeholder="Add custom item…" onkeydown="if(event.key==='Enter') addItem()">
+          <button class="btn btn-sm btn-primary" onclick="addItem()">Add</button>
+        </div>
+      </div>
+      <div class="supply-panel">
+        <div class="panel-head">
+          <div class="panel-head-left">
+            <div class="panel-title">✅ Gear Covered</div>
+            <span class="count-badge" id="covered-count">0</span>
+          </div>
+        </div>
+        <div class="supply-list" id="covered-list"></div>
+      </div>
+    </div>
+    <div class="trip-footer-actions">
+      <button class="btn btn-secondary btn-sm" onclick="copyTripName()">📋 Copy Trip Name</button>
+      <button class="btn btn-ghost btn-sm" onclick="leaveTrip()">← All Trips</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast notification -->
+<div id="toast">✓ Done</div>
+
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
+<!-- App logic -->
+<script src="app.js"></script>
+
+</body>
+</html>
