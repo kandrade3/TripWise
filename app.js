@@ -11,88 +11,226 @@ const firebaseConfig = {
 };
 
 // ── Supply presets ───────────────────────────────────────────────
+// Each item is either a string (qty = 1, shared) or an object:
+//   { name, perPerson: true }   → quantity scales with member count
+//   All other items default to qty: 1
+
 const BASE_SUPPLIES = {
   lead_climbing: [
-    'Climbing harness', 'Helmet', 'Belay device + locking carabiner', 'Chalk bag + chalk',
-    'Climbing shoes', 'Dynamic rope (60m+)', 'Quickdraws (12–16)', 'Personal anchor system',
-    'Nut tool', 'Trad rack (if trad climbing)', 'First aid kit', 'Water (2L+ per person)',
-    'Snacks / nutrition', 'Sun protection (hat, SPF)', 'Approach shoes', 'Headlamp',
-    'Emergency bivy', 'Rope bag / tarp', 'Guidebook or topo', 'Crash pad (for approach boulders)'
+    { name: 'Climbing harness',              perPerson: true  },
+    { name: 'Helmet',                        perPerson: true  },
+    { name: 'Belay device + locking carabiner', perPerson: true },
+    { name: 'Chalk bag + chalk',             perPerson: true  },
+    { name: 'Climbing shoes',                perPerson: true  },
+    { name: 'Dynamic rope (60m+)',           perPerson: false },
+    { name: 'Quickdraws (12–16)',            perPerson: false },
+    { name: 'Personal anchor system',        perPerson: true  },
+    { name: 'Nut tool',                      perPerson: false },
+    { name: 'Trad rack (if trad climbing)',  perPerson: false },
+    { name: 'First aid kit',                 perPerson: false },
+    { name: 'Water (2L+)',                   perPerson: true  },
+    { name: 'Snacks / nutrition',            perPerson: true  },
+    { name: 'Sun protection (hat, SPF)',     perPerson: true  },
+    { name: 'Approach shoes',               perPerson: true  },
+    { name: 'Headlamp',                     perPerson: true  },
+    { name: 'Emergency bivy',               perPerson: false },
+    { name: 'Rope bag / tarp',              perPerson: false },
+    { name: 'Guidebook or topo',            perPerson: false },
+    { name: 'Crash pad (for approach)',     perPerson: false },
   ],
   top_rope_climbing: [
-    'Climbing harness', 'Helmet', 'Belay device + locking carabiner', 'Chalk bag + chalk',
-    'Climbing shoes', 'Static or dynamic rope', 'Anchor webbing / cordelette',
-    'Locking carabiners (3+)', 'First aid kit', 'Water (2L+ per person)',
-    'Snacks / nutrition', 'Sun protection (hat, SPF)', 'Approach shoes', 'Headlamp',
-    'Rope bag', 'Guidebook or topo'
+    { name: 'Climbing harness',             perPerson: true  },
+    { name: 'Helmet',                       perPerson: true  },
+    { name: 'Belay device + locking carabiner', perPerson: true },
+    { name: 'Chalk bag + chalk',            perPerson: true  },
+    { name: 'Climbing shoes',               perPerson: true  },
+    { name: 'Static or dynamic rope',       perPerson: false },
+    { name: 'Anchor webbing / cordelette',  perPerson: false },
+    { name: 'Locking carabiners (3+)',      perPerson: false },
+    { name: 'First aid kit',                perPerson: false },
+    { name: 'Water (2L+)',                  perPerson: true  },
+    { name: 'Snacks / nutrition',           perPerson: true  },
+    { name: 'Sun protection (hat, SPF)',    perPerson: true  },
+    { name: 'Approach shoes',              perPerson: true  },
+    { name: 'Headlamp',                    perPerson: true  },
+    { name: 'Rope bag',                    perPerson: false },
+    { name: 'Guidebook or topo',           perPerson: false },
   ],
   bouldering: [
-    'Crash pads (2+)', 'Climbing shoes', 'Chalk bag + chalk', 'Brush for holds',
-    'Knee pads', 'First aid kit', 'Water (2L+ per person)', 'Snacks / nutrition',
-    'Sun protection', 'Headlamp', 'Guidebook or topo', 'Backpack to carry crash pads'
+    { name: 'Crash pads (2+)',             perPerson: false },
+    { name: 'Climbing shoes',              perPerson: true  },
+    { name: 'Chalk bag + chalk',           perPerson: true  },
+    { name: 'Brush for holds',             perPerson: false },
+    { name: 'Knee pads',                   perPerson: true  },
+    { name: 'First aid kit',               perPerson: false },
+    { name: 'Water (2L+)',                 perPerson: true  },
+    { name: 'Snacks / nutrition',          perPerson: true  },
+    { name: 'Sun protection',              perPerson: true  },
+    { name: 'Headlamp',                   perPerson: true  },
+    { name: 'Guidebook or topo',          perPerson: false },
+    { name: 'Backpack to carry crash pads', perPerson: false },
   ],
   hiking: [
-    'Trail map / GPS device', 'Navigation compass', 'Water (3L+ per person)',
-    'Water filter / purification tabs', 'Snacks / nutrition', 'First aid kit',
-    'Hiking boots / trail shoes', 'Trekking poles', 'Rain jacket / poncho',
-    'Sun protection (hat, SPF)', 'Headlamp + extra batteries', 'Emergency whistle',
-    'Space / emergency blanket', 'Knife / multi-tool', 'Layers (fleece/puffy)',
-    'Gaiters (if muddy)', 'Satellite communicator'
+    { name: 'Trail map / GPS device',      perPerson: false },
+    { name: 'Navigation compass',          perPerson: false },
+    { name: 'Water (3L+)',                 perPerson: true  },
+    { name: 'Water filter / purification tabs', perPerson: false },
+    { name: 'Snacks / nutrition',          perPerson: true  },
+    { name: 'First aid kit',               perPerson: false },
+    { name: 'Hiking boots / trail shoes',  perPerson: true  },
+    { name: 'Trekking poles',              perPerson: true  },
+    { name: 'Rain jacket / poncho',        perPerson: true  },
+    { name: 'Sun protection (hat, SPF)',   perPerson: true  },
+    { name: 'Headlamp + extra batteries',  perPerson: true  },
+    { name: 'Emergency whistle',           perPerson: true  },
+    { name: 'Space / emergency blanket',   perPerson: true  },
+    { name: 'Knife / multi-tool',          perPerson: false },
+    { name: 'Layers (fleece/puffy)',       perPerson: true  },
+    { name: 'Gaiters (if muddy)',          perPerson: true  },
+    { name: 'Satellite communicator',      perPerson: false },
   ],
   backpacking: [
-    'Backpack (50–70L)', 'Trail map / GPS device', 'Navigation compass',
-    'Water filter / purification tabs', 'Water bottles / hydration bladder',
-    'Backpacking stove + fuel', 'Cookpot + utensils', 'Food (3 days+)',
-    'Bear canister / hang bag', 'Trekking poles', 'Rain jacket / poncho',
-    'Sun protection', 'Headlamp + extra batteries', 'First aid kit',
-    'Knife / multi-tool', 'Layers (fleece/puffy)', 'Gaiters',
-    'Satellite communicator', 'Leave No Trace essentials', 'Trowel', 'Waste bags'
+    { name: 'Backpack (50–70L)',           perPerson: true  },
+    { name: 'Trail map / GPS device',      perPerson: false },
+    { name: 'Navigation compass',          perPerson: false },
+    { name: 'Water filter / purification tabs', perPerson: false },
+    { name: 'Water bottles / hydration bladder', perPerson: true },
+    { name: 'Backpacking stove + fuel',    perPerson: false },
+    { name: 'Cookpot + utensils',          perPerson: false },
+    { name: 'Food (3 days+)',              perPerson: true  },
+    { name: 'Bear canister / hang bag',    perPerson: false },
+    { name: 'Trekking poles',             perPerson: true  },
+    { name: 'Rain jacket / poncho',       perPerson: true  },
+    { name: 'Sun protection',             perPerson: true  },
+    { name: 'Headlamp + extra batteries', perPerson: true  },
+    { name: 'First aid kit',              perPerson: false },
+    { name: 'Knife / multi-tool',         perPerson: false },
+    { name: 'Layers (fleece/puffy)',      perPerson: true  },
+    { name: 'Gaiters',                   perPerson: true  },
+    { name: 'Satellite communicator',     perPerson: false },
+    { name: 'Leave No Trace essentials',  perPerson: false },
+    { name: 'Trowel',                    perPerson: false },
+    { name: 'Waste bags',                perPerson: true  },
   ],
   scuba_diving: [
-    'BCD (buoyancy control device)', 'Regulator + alternate air source', 'Dive computer',
-    'Wetsuit / drysuit', 'Mask + snorkel', 'Fins', 'Weight system + weights',
-    'Dive tank (or rental confirmation)', 'Underwater torch', 'Surface marker buoy (SMB)',
-    'Dive flag', 'Logbook + certification card', 'Dive knife / shears',
-    'Rash guard / thermal layer', 'Defog solution', 'First aid / O2 kit',
-    'Waterproof bag', 'Sun protection', 'Water + hydration'
+    { name: 'BCD (buoyancy control device)', perPerson: true },
+    { name: 'Regulator + alternate air source', perPerson: true },
+    { name: 'Dive computer',              perPerson: true  },
+    { name: 'Wetsuit / drysuit',          perPerson: true  },
+    { name: 'Mask + snorkel',             perPerson: true  },
+    { name: 'Fins',                       perPerson: true  },
+    { name: 'Weight system + weights',    perPerson: true  },
+    { name: 'Dive tank (or rental)',      perPerson: true  },
+    { name: 'Underwater torch',           perPerson: true  },
+    { name: 'Surface marker buoy (SMB)', perPerson: true  },
+    { name: 'Dive flag',                 perPerson: false },
+    { name: 'Logbook + certification card', perPerson: true },
+    { name: 'Dive knife / shears',       perPerson: true  },
+    { name: 'Rash guard / thermal layer',perPerson: true  },
+    { name: 'Defog solution',            perPerson: true  },
+    { name: 'First aid / O2 kit',        perPerson: false },
+    { name: 'Waterproof bag',            perPerson: true  },
+    { name: 'Sun protection',            perPerson: true  },
+    { name: 'Water + hydration',         perPerson: true  },
   ],
   kayaking: [
-    'Kayak + paddle', 'PFD (life jacket)', 'Helmet (whitewater)', 'Spray skirt',
-    'Bilge pump', 'Paddle float', 'Dry bags (waterproof storage)', 'Wetsuit / paddling jacket',
-    'Water shoes / booties', 'Headlamp', 'Navigation / maps', 'First aid kit',
-    'Sun protection', 'Water + hydration', 'Snacks', 'Throw bag', 'Whistle'
+    { name: 'Kayak + paddle',            perPerson: true  },
+    { name: 'PFD (life jacket)',         perPerson: true  },
+    { name: 'Helmet (whitewater)',       perPerson: true  },
+    { name: 'Spray skirt',              perPerson: true  },
+    { name: 'Bilge pump',               perPerson: false },
+    { name: 'Paddle float',             perPerson: true  },
+    { name: 'Dry bags (waterproof)',    perPerson: true  },
+    { name: 'Wetsuit / paddling jacket',perPerson: true  },
+    { name: 'Water shoes / booties',    perPerson: true  },
+    { name: 'Headlamp',                perPerson: true  },
+    { name: 'Navigation / maps',       perPerson: false },
+    { name: 'First aid kit',           perPerson: false },
+    { name: 'Sun protection',          perPerson: true  },
+    { name: 'Water + hydration',       perPerson: true  },
+    { name: 'Snacks',                  perPerson: true  },
+    { name: 'Throw bag',              perPerson: false },
+    { name: 'Whistle',                perPerson: true  },
   ],
   mountain_biking: [
-    'Mountain bike (tuned & serviced)', 'Helmet', 'Gloves', 'Knee & elbow pads',
-    'Eye protection / goggles', 'Hydration pack / water bottles', 'Nutrition / snacks',
-    'Bike multi-tool', 'Spare tubes + patch kit', 'Tire levers',
-    'Hand pump / CO2 inflator', 'Chain lube', 'First aid kit',
-    'Sun protection', 'GPS / trail map', 'Lights (front & rear)', 'Phone mount'
+    { name: 'Mountain bike (tuned)',    perPerson: true  },
+    { name: 'Helmet',                  perPerson: true  },
+    { name: 'Gloves',                  perPerson: true  },
+    { name: 'Knee & elbow pads',       perPerson: true  },
+    { name: 'Eye protection / goggles',perPerson: true  },
+    { name: 'Hydration pack / bottles',perPerson: true  },
+    { name: 'Nutrition / snacks',      perPerson: true  },
+    { name: 'Bike multi-tool',         perPerson: false },
+    { name: 'Spare tubes + patch kit', perPerson: true  },
+    { name: 'Tire levers',            perPerson: false },
+    { name: 'Hand pump / CO2',        perPerson: true  },
+    { name: 'Chain lube',             perPerson: false },
+    { name: 'First aid kit',          perPerson: false },
+    { name: 'Sun protection',         perPerson: true  },
+    { name: 'GPS / trail map',        perPerson: false },
+    { name: 'Lights (front & rear)',  perPerson: true  },
+    { name: 'Phone mount',            perPerson: true  },
   ],
   skiing: [
-    'Skis / snowboard + bindings (tuned)', 'Boots', 'Poles (skiing)', 'Helmet',
-    'Goggles', 'Ski jacket + pants', 'Base layers (thermal top & bottom)',
-    'Gloves / mittens', 'Neck gaiter / balaclava', 'Ski socks (wool)', 'Lift pass',
-    'Avalanche beacon + probe + shovel (backcountry)', 'Sunscreen (high SPF)',
-    'Lip balm (SPF)', 'First aid kit', 'Backpack (day)', 'Water + snacks',
-    'Hand warmers', 'Boot bag'
+    { name: 'Skis / snowboard + bindings', perPerson: true },
+    { name: 'Boots',                  perPerson: true  },
+    { name: 'Poles (skiing)',         perPerson: true  },
+    { name: 'Helmet',                 perPerson: true  },
+    { name: 'Goggles',               perPerson: true  },
+    { name: 'Ski jacket + pants',    perPerson: true  },
+    { name: 'Base layers (thermal)', perPerson: true  },
+    { name: 'Gloves / mittens',      perPerson: true  },
+    { name: 'Neck gaiter / balaclava', perPerson: true },
+    { name: 'Ski socks (wool)',      perPerson: true  },
+    { name: 'Lift pass',             perPerson: true  },
+    { name: 'Avalanche beacon + probe + shovel', perPerson: true },
+    { name: 'Sunscreen (high SPF)', perPerson: true  },
+    { name: 'Lip balm (SPF)',       perPerson: true  },
+    { name: 'First aid kit',        perPerson: false },
+    { name: 'Backpack (day)',       perPerson: true  },
+    { name: 'Water + snacks',      perPerson: true  },
+    { name: 'Hand warmers',        perPerson: true  },
+    { name: 'Boot bag',            perPerson: true  },
   ],
   canyoneering: [
-    'Harness', 'Helmet', 'Rappel device (ATC or similar)', 'Locking carabiners (3+)',
-    'Static rope (length for longest rappel)', 'Webbing / cordelette',
-    'Wetsuit (if wet canyon)', 'Canyon shoes / booties', 'Dry bags',
-    'Water (3L+ per person)', 'Water filter', 'Food / snacks', 'First aid kit',
-    'Knife / shears', 'Headlamp', 'Sun protection', 'Satellite communicator',
-    'Canyon topo / guidebook'
-  ]
+    { name: 'Harness',                  perPerson: true  },
+    { name: 'Helmet',                   perPerson: true  },
+    { name: 'Rappel device (ATC)',      perPerson: true  },
+    { name: 'Locking carabiners (3+)', perPerson: true  },
+    { name: 'Static rope',             perPerson: false },
+    { name: 'Webbing / cordelette',    perPerson: false },
+    { name: 'Wetsuit (if wet canyon)', perPerson: true  },
+    { name: 'Canyon shoes / booties',  perPerson: true  },
+    { name: 'Dry bags',               perPerson: true  },
+    { name: 'Water (3L+)',            perPerson: true  },
+    { name: 'Water filter',           perPerson: false },
+    { name: 'Food / snacks',          perPerson: true  },
+    { name: 'First aid kit',          perPerson: false },
+    { name: 'Knife / shears',         perPerson: false },
+    { name: 'Headlamp',              perPerson: true  },
+    { name: 'Sun protection',        perPerson: true  },
+    { name: 'Satellite communicator',perPerson: false },
+    { name: 'Canyon topo / guidebook',perPerson: false },
+  ],
 };
 
 const CAMPING_SUPPLIES = [
-  'Tent + stakes + guylines', 'Sleeping bag (season-appropriate)', 'Sleeping pad',
-  'Camp stove + fuel canister', 'Cookpot + utensils', 'Camp mug', 'Food (all meals)',
-  'Bear canister / hang kit', 'Lantern or extra headlamps', 'Camp chair / sitting pad',
-  'Camp soap + scrubber', 'Trash bags', 'Trowel + waste bags', 'Camp towel',
-  'Clothes for extra days', 'Warm layers for evenings'
+  { name: 'Tent + stakes + guylines',        perPerson: false },
+  { name: 'Sleeping bag (season-appropriate)', perPerson: true },
+  { name: 'Sleeping pad',                     perPerson: true  },
+  { name: 'Camp stove + fuel canister',       perPerson: false },
+  { name: 'Cookpot + utensils',              perPerson: false },
+  { name: 'Camp mug',                        perPerson: true  },
+  { name: 'Food (all meals)',                perPerson: true  },
+  { name: 'Bear canister / hang kit',        perPerson: false },
+  { name: 'Lantern or extra headlamps',      perPerson: false },
+  { name: 'Camp chair / sitting pad',        perPerson: true  },
+  { name: 'Camp soap + scrubber',            perPerson: false },
+  { name: 'Trash bags',                      perPerson: false },
+  { name: 'Trowel + waste bags',            perPerson: false },
+  { name: 'Camp towel',                      perPerson: true  },
+  { name: 'Clothes for extra days',          perPerson: true  },
+  { name: 'Warm layers for evenings',        perPerson: true  },
 ];
 
 const TYPE_LABELS = {
@@ -105,7 +243,7 @@ const TYPE_LABELS = {
   kayaking: 'Kayaking',
   mountain_biking: 'Mountain Biking',
   skiing: 'Skiing / Snowboarding',
-  canyoneering: 'Canyoneering'
+  canyoneering: 'Canyoneering',
 };
 
 const TYPE_EMOJI = {
@@ -118,16 +256,64 @@ const TYPE_EMOJI = {
   kayaking: '🛶',
   mountain_biking: '🚵',
   skiing: '⛷️',
-  canyoneering: '🏜️'
+  canyoneering: '🏜️',
 };
 
 // ── App state ────────────────────────────────────────────────────
-let db = null;
-let currentTrip = null;
-let currentUser = null;
-let campingOn = false;
-let tripUnsubscribe = null;
-let homeUnsubscribe = null;
+let db             = null;
+let currentTrip    = null;
+let currentUser    = null;
+let campingOn      = false;
+let groupSize      = 1;
+let tripUnsubscribe  = null;
+let homeUnsubscribe  = null;
+
+// Modal state
+let modalItemId    = null;
+let modalMaxQty    = 1;
+let modalCurrentQty = 1;
+
+// ── Helpers ──────────────────────────────────────────────────────
+
+/** Build an item object from a supply preset + current member count */
+function makeItem(preset, memberCount, index) {
+  const name      = typeof preset === 'string' ? preset : preset.name;
+  const perPerson = typeof preset === 'object' && preset.perPerson;
+  const qty       = perPerson ? memberCount : 1;
+  return {
+    id:        'item_' + Date.now() + '_' + index,
+    name,
+    perPerson: !!perPerson,
+    qty,                  // total units needed
+    claims: [],           // [{ user, qty, comment }]
+  };
+}
+
+/** How many units of an item are still unclaimed */
+function remainingQty(item) {
+  const claimed = (item.claims || []).reduce((s, c) => s + (c.qty || 1), 0);
+  return Math.max(0, (item.qty || 1) - claimed);
+}
+
+/** Whether an item is fully covered */
+function isCovered(item) {
+  return remainingQty(item) === 0;
+}
+
+/** Recompute per-person quantities when member count changes */
+function rescaleItems(items, newMemberCount) {
+  return items.map(item => {
+    if (!item.perPerson) return item;
+    const oldQty   = item.qty || 1;
+    const newQty   = newMemberCount;
+    // Scale claimed quantities proportionally (floor, never below 0)
+    const claims   = (item.claims || []).map(c => ({
+      ...c,
+      qty: Math.max(0, Math.min(c.qty, newQty)),
+    })).filter(c => c.qty > 0);
+    return { ...item, qty: newQty, claims };
+  });
+}
 
 // ── Firebase init ────────────────────────────────────────────────
 function initFirebase() {
@@ -158,17 +344,28 @@ function showScreen(name) {
   window.scrollTo({ top: 0, behavior: 'smooth' });
   if (name === 'home') subscribeHome();
   if (name === 'trip') subscribeTrip();
-  if (name !== 'trip' && tripUnsubscribe) {
-    tripUnsubscribe();
-    tripUnsubscribe = null;
-  }
+  if (name !== 'trip' && tripUnsubscribe) { tripUnsubscribe(); tripUnsubscribe = null; }
+}
+
+// ── Group size stepper ───────────────────────────────────────────
+function changeGroupSize(delta) {
+  groupSize = Math.max(1, groupSize + delta);
+  document.getElementById('group-size-val').textContent = groupSize;
+}
+
+// ── Camping toggle ───────────────────────────────────────────────
+function toggleCamping(event) {
+  if (event) event.preventDefault();
+  campingOn = !campingOn;
+  document.getElementById('camping-toggle').classList.toggle('on', campingOn);
+  document.getElementById('camping-label').textContent =
+    campingOn ? 'Yes — Camping Overnight' : 'No — Day Trip';
 }
 
 // ── Real-time home listener ──────────────────────────────────────
 function subscribeHome() {
   if (!db) return;
   if (homeUnsubscribe) homeUnsubscribe();
-
   homeUnsubscribe = db.collection('trips')
     .orderBy('createdAt', 'desc')
     .onSnapshot(snap => {
@@ -178,14 +375,15 @@ function subscribeHome() {
         return;
       }
       container.innerHTML = snap.docs.map(doc => {
-        const t = doc.data();
-        const covered = (t.items || []).filter(i => i.claimedBy).length;
-        const total = (t.items || []).length;
-        const pct = total ? Math.round(covered / total * 100) : 0;
-        const name = doc.id;
-        return `<span class="trip-pill" onclick="quickViewTrip('${name.replace(/'/g, "\\'")}')">
+        const t       = doc.data();
+        const items   = t.items || [];
+        const covered = items.filter(i => isCovered(i)).length;
+        const total   = items.length;
+        const pct     = total ? Math.round(covered / total * 100) : 0;
+        const tripName = doc.id;
+        return `<span class="trip-pill" onclick="quickViewTrip('${tripName.replace(/'/g, "\\'")}')">
           <span class="pill-dot"></span>
-          ${TYPE_EMOJI[t.type] || '🗺️'} ${name} · ${pct}% packed
+          ${TYPE_EMOJI[t.type] || '🗺️'} ${tripName} · ${pct}% packed
         </span>`;
       }).join('');
     }, err => console.error('Home listener error:', err));
@@ -200,22 +398,11 @@ function renderHomeFallback() {
 function subscribeTrip() {
   if (!db || !currentTrip) return;
   if (tripUnsubscribe) tripUnsubscribe();
-
   tripUnsubscribe = db.collection('trips').doc(currentTrip)
     .onSnapshot(snap => {
       if (!snap.exists) { showScreen('home'); return; }
       renderTrip(snap.data());
     }, err => console.error('Trip listener error:', err));
-}
-
-// ── Toggle camping ───────────────────────────────────────────────
-// FIX: prevent the label's default checkbox toggle from double-firing the state change
-function toggleCamping(event) {
-  if (event) event.preventDefault();
-  campingOn = !campingOn;
-  document.getElementById('camping-toggle').classList.toggle('on', campingOn);
-  document.getElementById('camping-label').textContent =
-    campingOn ? 'Yes — Camping Overnight' : 'No — Day Trip';
 }
 
 // ── Create trip ──────────────────────────────────────────────────
@@ -233,17 +420,13 @@ async function createTrip() {
 
   if (!tripName) { toggleErr('err-trip-name', true, 'Please enter a trip name.'); ok = false; }
   else toggleErr('err-trip-name', false);
-
   if (!yourName) { toggleErr('err-your-name', true, 'Please enter your name.'); ok = false; }
   else toggleErr('err-your-name', false);
-
   if (!tripType) { toggleErr('err-trip-type', true, 'Please select a trip type.'); ok = false; }
   else toggleErr('err-trip-type', false);
-
   if (!ok) return;
   if (!db) { toast('⚠️ Firebase not configured'); return; }
 
-  // FIX: disable button while async work runs so double-clicks can't fire duplicate writes
   const btn = document.querySelector('#screen-create .btn-primary');
   btn.disabled = true;
   btn.textContent = 'Creating…';
@@ -255,31 +438,30 @@ async function createTrip() {
       return;
     }
 
-    const supplies = [...(BASE_SUPPLIES[tripType] || [])];
-    if (campingOn) supplies.push(...CAMPING_SUPPLIES);
+    const presets = [...(BASE_SUPPLIES[tripType] || [])];
+    if (campingOn) presets.push(...CAMPING_SUPPLIES);
 
-    const items = supplies.map((name, i) => ({
-      id: 'item_' + Date.now() + '_' + i,
-      name,
-      claimedBy: null
-    }));
+    const items = presets.map((preset, i) => makeItem(preset, groupSize, i));
 
     const tripData = {
-      type: tripType,
-      camping: campingOn,
-      creator: yourName,
-      members: [yourName],
+      type:       tripType,
+      camping:    campingOn,
+      creator:    yourName,
+      members:    [yourName],
+      groupSize,
       items,
-      createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      createdAt:  firebase.firestore.FieldValue.serverTimestamp(),
     };
 
     await db.collection('trips').doc(tripName).set(tripData);
 
     currentTrip = tripName;
     currentUser = yourName;
-    campingOn = false;
+    campingOn   = false;
+    groupSize   = 1;
     document.getElementById('camping-toggle').classList.remove('on');
     document.getElementById('camping-label').textContent = 'No — Day Trip';
+    document.getElementById('group-size-val').textContent = '1';
     document.getElementById('create-trip-name').value = '';
     document.getElementById('create-your-name').value = '';
     document.getElementById('create-trip-type').value = '';
@@ -290,7 +472,6 @@ async function createTrip() {
     console.error('createTrip error:', e);
     toast('❌ Error: ' + e.message);
   } finally {
-    // FIX: always re-enable the button whether success or failure
     btn.disabled = false;
     btn.textContent = 'Generate Trip & Gear List';
   }
@@ -303,13 +484,10 @@ async function joinTrip() {
   let ok = true;
 
   const toggleErr = (id, show) => document.getElementById(id).classList.toggle('show', show);
-
   if (!tripName) { toggleErr('err-join-trip', true); ok = false; }
   else toggleErr('err-join-trip', false);
-
   if (!yourName) { toggleErr('err-join-name', true); ok = false; }
   else toggleErr('err-join-name', false);
-
   if (!ok) return;
   if (!db) { toast('⚠️ Firebase not configured'); return; }
 
@@ -320,9 +498,17 @@ async function joinTrip() {
   }
 
   const trip = snap.data();
-  if (!trip.members.includes(yourName)) {
+  const alreadyMember = (trip.members || []).includes(yourName);
+
+  if (!alreadyMember) {
+    const newMembers = [...(trip.members || []), yourName];
+    const newCount   = newMembers.length;
+    // Rescale per-person items to new member count
+    const rescaled   = rescaleItems(trip.items || [], newCount);
     await db.collection('trips').doc(tripName).update({
-      members: firebase.firestore.FieldValue.arrayUnion(yourName)
+      members:   firebase.firestore.FieldValue.arrayUnion(yourName),
+      groupSize: newCount,
+      items:     rescaled,
     });
   }
 
@@ -336,52 +522,66 @@ async function joinTrip() {
   showScreen('trip');
 }
 
-// ── Quick view trip from home ────────────────────────────────────
+// ── Quick view from home ─────────────────────────────────────────
 function quickViewTrip(name) {
   const user = prompt("Welcome back! What's your name?");
   if (!user || !user.trim()) return;
   currentUser = user.trim();
   currentTrip = name;
   if (db) {
-    db.collection('trips').doc(name).update({
-      members: firebase.firestore.FieldValue.arrayUnion(currentUser)
+    db.collection('trips').doc(name).get().then(snap => {
+      if (!snap.exists) return;
+      const trip = snap.data();
+      if (!(trip.members || []).includes(currentUser)) {
+        const newMembers = [...(trip.members || []), currentUser];
+        const rescaled   = rescaleItems(trip.items || [], newMembers.length);
+        db.collection('trips').doc(name).update({
+          members:   firebase.firestore.FieldValue.arrayUnion(currentUser),
+          groupSize: newMembers.length,
+          items:     rescaled,
+        });
+      }
     });
   }
   showScreen('trip');
 }
 
-// ── Render trip view ─────────────────────────────────────────────
+// ── Render trip ──────────────────────────────────────────────────
 function renderTrip(trip) {
   if (!trip) return;
-  const emoji = TYPE_EMOJI[trip.type] || '🗺️';
+  const emoji   = TYPE_EMOJI[trip.type] || '🗺️';
+  const items   = trip.items || [];
+  const members = trip.members || [];
 
+  // Header
   document.getElementById('trip-header-block').innerHTML = `
     <div class="trip-header" data-type-emoji="${emoji}">
       <div class="trip-type-badge">${emoji} ${TYPE_LABELS[trip.type] || trip.type}${trip.camping ? ' · 🏕️ Camping' : ''}</div>
       <div class="trip-name-big">${currentTrip}</div>
       <div class="trip-meta">
         <span>👤 You're ${currentUser}</span>
+        <span>👥 ${members.length} member${members.length !== 1 ? 's' : ''}</span>
         <span><span class="sync-dot"></span>Live sync on</span>
       </div>
       <div class="members-bar">
         <span style="font-size:12px;color:rgba(232,223,200,0.6);margin-right:4px">Crew:</span>
-        ${(trip.members || []).map(m =>
+        ${members.map(m =>
           `<span class="member-chip${m === trip.creator ? ' creator' : ''}">${m}${m === trip.creator ? ' ★' : ''}</span>`
         ).join('')}
       </div>
     </div>`;
 
-  const items   = trip.items || [];
-  const covered = items.filter(i => i.claimedBy).length;
-  const needed  = items.length - covered;
-  const pct     = items.length ? Math.round(covered / items.length * 100) : 0;
+  // Stats
+  const coveredItems = items.filter(i => isCovered(i));
+  const neededItems  = items.filter(i => !isCovered(i));
+  const pct          = items.length ? Math.round(coveredItems.length / items.length * 100) : 0;
 
   document.getElementById('trip-status-strip').innerHTML = `
     <div class="status-strip">
       <div class="status-stat"><strong>${items.length}</strong> total items</div>
-      <div class="status-stat"><strong>${covered}</strong> covered</div>
-      <div class="status-stat"><strong>${needed}</strong> still needed</div>
-      <div class="status-stat"><strong>${(trip.members || []).length}</strong> crew member${(trip.members || []).length !== 1 ? 's' : ''}</div>
+      <div class="status-stat"><strong>${coveredItems.length}</strong> covered</div>
+      <div class="status-stat"><strong>${neededItems.length}</strong> still needed</div>
+      <div class="status-stat"><strong>${members.length}</strong> crew member${members.length !== 1 ? 's' : ''}</div>
     </div>`;
 
   document.getElementById('trip-progress-wrap').innerHTML = `
@@ -390,60 +590,143 @@ function renderTrip(trip) {
       <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
     </div>`;
 
-  const needItems = items.filter(i => !i.claimedBy);
-  const covItems  = items.filter(i => i.claimedBy);
+  document.getElementById('needed-count').textContent  = neededItems.length;
+  document.getElementById('covered-count').textContent = coveredItems.length;
 
-  document.getElementById('needed-count').textContent = needItems.length;
-  document.getElementById('covered-count').textContent = covItems.length;
-
-  document.getElementById('needed-list').innerHTML = needItems.length
-    ? needItems.map(item => `
-      <div class="supply-item">
-        <div class="supply-check" onclick="claimItem('${item.id}')" title="I'm bringing this!">+</div>
-        <div class="supply-info"><div class="supply-name">${item.name}</div></div>
-        <div class="supply-actions">
-          <button class="icon-btn del" onclick="removeItem('${item.id}')" title="Remove">✕</button>
-        </div>
-      </div>`).join('')
+  // Needed list
+  document.getElementById('needed-list').innerHTML = neededItems.length
+    ? neededItems.map(item => {
+        const rem        = remainingQty(item);
+        const total      = item.qty || 1;
+        const partial    = (item.claims || []).length > 0; // some claimed but not all
+        const qtyLabel   = total > 1 ? `<span class="item-qty-badge">${rem}/${total} needed</span>` : '';
+        const ppLabel    = item.perPerson ? `<span class="per-person-badge">per person</span>` : '';
+        // Partial claims summary
+        const partialInfo = partial
+          ? `<div class="partial-claims">${(item.claims || []).map(c =>
+              `<span class="partial-chip">✓ ${c.user} ×${c.qty}${c.comment ? ` — "${c.comment}"` : ''}</span>`
+            ).join('')}</div>`
+          : '';
+        return `
+          <div class="supply-item">
+            <div class="supply-check ${partial ? 'partial' : ''}" onclick="openClaimModal('${item.id}')" title="I'm bringing this!">
+              ${partial ? '…' : '+'}
+            </div>
+            <div class="supply-info">
+              <div class="supply-name">${item.name} ${qtyLabel}${ppLabel}</div>
+              ${partialInfo}
+            </div>
+            <div class="supply-actions">
+              <button class="icon-btn del" onclick="removeItem('${item.id}')" title="Remove">✕</button>
+            </div>
+          </div>`;
+      }).join('')
     : '<div style="padding:20px;text-align:center;font-size:14px;color:var(--text-muted)">All gear accounted for! 🎉</div>';
 
-  document.getElementById('covered-list').innerHTML = covItems.length
-    ? covItems.map(item => `
-      <div class="supply-item">
-        <div class="supply-check checked"
-          onclick="${item.claimedBy === currentUser ? `unclaimItem('${item.id}')` : ''}"
-          title="${item.claimedBy === currentUser ? 'Unclaim' : ''}">✓</div>
-        <div class="supply-info">
-          <div class="supply-name" style="color:var(--text-muted);text-decoration:line-through">${item.name}</div>
-          <div class="supply-who">by ${item.claimedBy}</div>
-        </div>
-        ${item.claimedBy === currentUser
-          ? `<div class="supply-actions"><button class="icon-btn del" onclick="unclaimItem('${item.id}')" title="Unclaim">↩</button></div>`
-          : ''}
-      </div>`).join('')
+  // Covered list
+  document.getElementById('covered-list').innerHTML = coveredItems.length
+    ? coveredItems.map(item => {
+        const total     = item.qty || 1;
+        const claims    = item.claims || [];
+        const myClaimIdx = claims.findIndex(c => c.user === currentUser);
+        const qtyLabel  = total > 1
+          ? `<span class="item-qty-badge covered">${total}/${total} ✓</span>` : '';
+        return `
+          <div class="supply-item">
+            <div class="supply-check checked" title="Fully covered">✓</div>
+            <div class="supply-info">
+              <div class="supply-name" style="color:var(--text-muted);text-decoration:line-through">${item.name} ${qtyLabel}</div>
+              <div class="covered-claims">
+                ${claims.map(c => `
+                  <div class="claim-row">
+                    <span class="supply-who">✓ ${c.user} ×${c.qty}</span>
+                    ${c.comment ? `<span class="claim-comment">"${c.comment}"</span>` : ''}
+                  </div>`).join('')}
+              </div>
+            </div>
+            ${myClaimIdx !== -1
+              ? `<div class="supply-actions">
+                   <button class="icon-btn del" onclick="unclaimItem('${item.id}')" title="Unclaim my portion">↩</button>
+                 </div>`
+              : ''}
+          </div>`;
+      }).join('')
     : '<div style="padding:20px;text-align:center;font-size:14px;color:var(--text-muted)">Nothing claimed yet — grab some gear!</div>';
 }
 
-// ── Firestore item helpers ───────────────────────────────────────
+// ── Modal ────────────────────────────────────────────────────────
+function openClaimModal(itemId) {
+  // Get current trip data from Firestore snapshot (we re-fetch to be safe)
+  db.collection('trips').doc(currentTrip).get().then(snap => {
+    const trip   = snap.data();
+    const item   = (trip.items || []).find(i => i.id === itemId);
+    if (!item) return;
+
+    const rem = remainingQty(item);
+    if (rem === 0) { toast('This item is already fully covered!'); return; }
+
+    modalItemId     = itemId;
+    modalMaxQty     = rem;
+    modalCurrentQty = 1;
+
+    document.getElementById('modal-item-name').textContent = item.name;
+    document.getElementById('modal-qty-val').textContent   = 1;
+    document.getElementById('modal-qty-max').textContent   = `of ${rem} needed`;
+    document.getElementById('modal-comment').value         = '';
+
+    // Show qty stepper only for multi-qty items
+    const qtySection = document.getElementById('modal-qty-section');
+    qtySection.style.display = (item.qty || 1) > 1 ? 'block' : 'none';
+
+    document.getElementById('claim-modal').classList.add('open');
+    setTimeout(() => document.getElementById('modal-comment').focus(), 100);
+  });
+}
+
+function changeQty(delta) {
+  modalCurrentQty = Math.max(1, Math.min(modalMaxQty, modalCurrentQty + delta));
+  document.getElementById('modal-qty-val').textContent = modalCurrentQty;
+}
+
+function closeModal(event) {
+  // Close only if clicking backdrop or cancel button (not inside modal-box)
+  if (event && event.target.closest('.modal-box')) return;
+  document.getElementById('claim-modal').classList.remove('open');
+  modalItemId = null;
+}
+
+async function confirmClaim() {
+  if (!modalItemId) return;
+  const comment = document.getElementById('modal-comment').value.trim();
+  const qty     = modalCurrentQty;
+
+  await updateItems(items => {
+    const item = items.find(i => i.id === modalItemId);
+    if (!item) return;
+    // Remove any existing claim by this user first (re-claiming updates it)
+    item.claims = (item.claims || []).filter(c => c.user !== currentUser);
+    item.claims.push({ user: currentUser, qty, comment });
+  });
+
+  document.getElementById('claim-modal').classList.remove('open');
+  modalItemId = null;
+  toast(`✓ Claimed ×${qty}!`);
+}
+
+// ── Firestore helpers ────────────────────────────────────────────
 async function updateItems(mutate) {
   if (!db || !currentTrip) return;
-  const snap = await db.collection('trips').doc(currentTrip).get();
+  const snap  = await db.collection('trips').doc(currentTrip).get();
   const items = [...(snap.data().items || [])];
   mutate(items);
   await db.collection('trips').doc(currentTrip).update({ items });
 }
 
-async function claimItem(itemId) {
-  await updateItems(items => {
-    const item = items.find(i => i.id === itemId);
-    if (item) item.claimedBy = currentUser;
-  });
-}
-
 async function unclaimItem(itemId) {
   await updateItems(items => {
     const item = items.find(i => i.id === itemId);
-    if (item && item.claimedBy === currentUser) item.claimedBy = null;
+    if (!item) return;
+    item.claims = (item.claims || []).filter(c => c.user !== currentUser);
   });
 }
 
@@ -455,17 +738,37 @@ async function removeItem(itemId) {
 }
 
 async function addItem() {
-  const input = document.getElementById('new-item-input');
-  const val = input.value.trim();
+  const input   = document.getElementById('new-item-input');
+  const qtySel  = document.getElementById('new-item-qty');
+  const val     = input.value.trim();
   if (!val) return;
+
+  let qtyRaw    = parseInt(qtySel.value, 10);
+  const isPerPerson = qtyRaw === 0;
+
+  // Get current member count for per-person items
+  let finalQty = isPerPerson ? 1 : qtyRaw;
+  if (isPerPerson && db && currentTrip) {
+    const snap   = await db.collection('trips').doc(currentTrip).get();
+    finalQty     = (snap.data().members || []).length;
+  }
+
   await updateItems(items => {
-    items.push({ id: 'item_' + Date.now(), name: val, claimedBy: null });
+    items.push({
+      id:        'item_' + Date.now(),
+      name:      val,
+      perPerson: isPerPerson,
+      qty:       finalQty,
+      claims:    [],
+    });
   });
-  input.value = '';
+
+  input.value      = '';
+  qtySel.value     = '1';
   toast('Item added!');
 }
 
-// ── Navigation helpers ───────────────────────────────────────────
+// ── Navigation ───────────────────────────────────────────────────
 function leaveTrip() {
   if (tripUnsubscribe) { tripUnsubscribe(); tripUnsubscribe = null; }
   currentTrip = null;
