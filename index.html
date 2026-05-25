@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TripWise — Communal Trip Planner</title>
+  <title>Basecamp — Communal Trip Planner</title>
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
@@ -15,13 +15,37 @@
   <div class="loading-msg">Connecting to Firestore…</div>
 </div>
 
+<!-- Claim modal -->
+<div id="claim-modal" class="modal-backdrop" onclick="closeModal(event)">
+  <div class="modal-box">
+    <div class="modal-title" id="modal-item-name">Item name</div>
+    <div class="modal-section" id="modal-qty-section">
+      <label class="modal-label">How many are you bringing?</label>
+      <div class="qty-stepper">
+        <button class="qty-btn" onclick="changeQty(-1)">−</button>
+        <span class="qty-display" id="modal-qty-val">1</span>
+        <button class="qty-btn" onclick="changeQty(1)">+</button>
+        <span class="qty-max" id="modal-qty-max"></span>
+      </div>
+    </div>
+    <div class="modal-section">
+      <label class="modal-label">Add a note <span style="font-weight:400;color:var(--text-muted)">(optional)</span></label>
+      <textarea id="modal-comment" class="modal-textarea" placeholder="e.g. I have a 60m dry-treated rope, size 10 shoes, borrowing from REI…" rows="3"></textarea>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-primary btn-sm" onclick="confirmClaim()">Confirm</button>
+      <button class="btn btn-ghost btn-sm" onclick="closeModal()">Cancel</button>
+    </div>
+  </div>
+</div>
+
 <!-- Header -->
 <header>
   <div class="header-inner">
     <div class="logo-icon">⛺</div>
     <div class="logo-text">
-      <h1>TripWise</h1>
-      <p>Communal Trip Planner</p>
+      <h1>Basecamp</h1>
+      <p>Communal trip planner</p>
     </div>
   </div>
 </header>
@@ -55,7 +79,7 @@
 <div id="screen-create" class="screen">
   <div class="wrap">
     <div class="screen-title">Create a Trip</div>
-    <div class="screen-sub">Fill in the details — we'll generate a starter gear list for you.</div>
+    <div class="screen-sub">Fill in the details — we'll generate a starter gear list scaled to your crew size.</div>
     <div class="form-card">
       <div class="field">
         <label>Trip Name</label>
@@ -83,6 +107,15 @@
           <option value="canyoneering">🏜️ Canyoneering</option>
         </select>
         <div class="err" id="err-trip-type">Please select a trip type.</div>
+      </div>
+      <div class="field">
+        <label>Expected Group Size</label>
+        <div class="group-size-row">
+          <button class="qty-btn" onclick="changeGroupSize(-1)">−</button>
+          <span class="qty-display" id="group-size-val">1</span>
+          <button class="qty-btn" onclick="changeGroupSize(1)">+</button>
+          <span class="group-size-hint">person(s) — per-person gear will be multiplied</span>
+        </div>
       </div>
       <div class="field">
         <label>Camping Overnight?</label>
@@ -146,6 +179,17 @@
         <div class="supply-list" id="needed-list"></div>
         <div class="add-item-row">
           <input type="text" id="new-item-input" placeholder="Add custom item…" onkeydown="if(event.key==='Enter') addItem()">
+          <div class="add-qty-wrap">
+            <span class="add-qty-label">Qty</span>
+            <select id="new-item-qty" class="add-qty-select">
+              <option value="1">1×</option>
+              <option value="2">2×</option>
+              <option value="3">3×</option>
+              <option value="4">4×</option>
+              <option value="5">5×</option>
+              <option value="0">Per person</option>
+            </select>
+          </div>
           <button class="btn btn-sm btn-primary" onclick="addItem()">Add</button>
         </div>
       </div>
