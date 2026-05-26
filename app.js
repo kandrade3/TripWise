@@ -256,10 +256,11 @@ const TYPE_EMOJI = {
 };
 
 // ── Trip ID generator ────────────────────────────────────────────
-// Generates a short human-friendly ID like "TW-A3K9"
+// Generates a plain 4-character alphanumeric code like "B7KQ"
+// Excludes 0/O and 1/I to avoid confusion when sharing
 function generateTripId() {
-  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // no confusable chars (0/O, 1/I)
-  let id = 'TW-';
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  let id = '';
   for (let i = 0; i < 4; i++) {
     id += chars[Math.floor(Math.random() * chars.length)];
   }
@@ -268,7 +269,7 @@ function generateTripId() {
 
 // ── App state ────────────────────────────────────────────────────
 let db              = null;
-let currentTrip     = null;   // Firestore doc ID (= tripId e.g. "TW-A3K9")
+let currentTrip     = null;   // Firestore doc ID (= tripId e.g. "B7KQ")
 let currentUser     = null;
 let campingOn       = false;
 let groupSize       = 1;
