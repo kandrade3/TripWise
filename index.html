@@ -65,7 +65,7 @@
       <div class="home-card" onclick="showScreen('join')">
         <span class="card-emoji">🤝</span>
         <h2>Join a Trip</h2>
-        <p>Enter an existing trip name to join the crew and claim the gear you're bringing.</p>
+        <p>Enter the Trip ID shared by your crew to join and claim the gear you're bringing.</p>
       </div>
     </div>
     <div class="trips-preview">
@@ -141,12 +141,12 @@
 <div id="screen-join" class="screen">
   <div class="wrap">
     <div class="screen-title">Join a Trip</div>
-    <div class="screen-sub">Enter the trip name exactly as the creator named it.</div>
+    <div class="screen-sub">Enter the Trip ID shared by the trip creator.</div>
     <div class="form-card">
       <div class="field">
-        <label>Trip Name</label>
-        <input type="text" id="join-trip-name" placeholder="e.g. Red Rocks April Adventure">
-        <div class="err" id="err-join-trip">Trip not found. Check the name and try again.</div>
+        <label>Trip ID</label>
+        <input type="text" id="join-trip-id" placeholder="e.g. TW-A3K9" style="text-transform:uppercase;letter-spacing:2px;font-family:'Syne',sans-serif;font-weight:700;">
+        <div class="err" id="err-join-trip">Trip not found. Check the ID and try again.</div>
       </div>
       <div class="field">
         <label>Your Name</label>
@@ -204,7 +204,11 @@
       </div>
     </div>
     <div class="trip-footer-actions">
-      <button class="btn btn-secondary btn-sm" onclick="copyTripName()">📋 Copy Trip Name</button>
+      <div class="trip-id-box">
+        <span class="trip-id-label">Trip ID</span>
+        <span class="trip-id-value" id="footer-trip-id">—</span>
+        <button class="btn btn-secondary btn-sm" onclick="copyTripId()">📋 Copy ID</button>
+      </div>
       <button class="btn btn-ghost btn-sm" onclick="leaveTrip()">← All Trips</button>
     </div>
   </div>

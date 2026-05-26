@@ -11,271 +11,276 @@ const firebaseConfig = {
 };
 
 // ── Supply presets ───────────────────────────────────────────────
-// Each item is either a string (qty = 1, shared) or an object:
-//   { name, perPerson: true }   → quantity scales with member count
-//   All other items default to qty: 1
-
 const BASE_SUPPLIES = {
   lead_climbing: [
-    { name: 'Climbing harness',              perPerson: true  },
-    { name: 'Helmet',                        perPerson: true  },
-    { name: 'Belay device + locking carabiner', perPerson: true },
-    { name: 'Chalk bag + chalk',             perPerson: true  },
-    { name: 'Climbing shoes',                perPerson: true  },
-    { name: 'Dynamic rope (60m+)',           perPerson: false },
-    { name: 'Quickdraws (12–16)',            perPerson: false },
-    { name: 'Personal anchor system',        perPerson: true  },
-    { name: 'Nut tool',                      perPerson: false },
-    { name: 'Trad rack (if trad climbing)',  perPerson: false },
-    { name: 'First aid kit',                 perPerson: false },
-    { name: 'Water (2L+)',                   perPerson: true  },
-    { name: 'Snacks / nutrition',            perPerson: true  },
-    { name: 'Sun protection (hat, SPF)',     perPerson: true  },
-    { name: 'Approach shoes',               perPerson: true  },
-    { name: 'Headlamp',                     perPerson: true  },
-    { name: 'Emergency bivy',               perPerson: false },
-    { name: 'Rope bag / tarp',              perPerson: false },
-    { name: 'Guidebook or topo',            perPerson: false },
-    { name: 'Crash pad (for approach)',     perPerson: false },
+    { name: 'Climbing harness',                 perPerson: true  },
+    { name: 'Helmet',                           perPerson: true  },
+    { name: 'Belay device + locking carabiner', perPerson: true  },
+    { name: 'Chalk bag + chalk',                perPerson: true  },
+    { name: 'Climbing shoes',                   perPerson: true  },
+    { name: 'Dynamic rope (60m+)',              perPerson: false },
+    { name: 'Quickdraws (12–16)',               perPerson: false },
+    { name: 'Personal anchor system',           perPerson: true  },
+    { name: 'Nut tool',                         perPerson: false },
+    { name: 'Trad rack (if trad climbing)',     perPerson: false },
+    { name: 'First aid kit',                    perPerson: false },
+    { name: 'Water (2L+)',                      perPerson: true  },
+    { name: 'Snacks / nutrition',               perPerson: true  },
+    { name: 'Sun protection (hat, SPF)',        perPerson: true  },
+    { name: 'Approach shoes',                   perPerson: true  },
+    { name: 'Headlamp',                         perPerson: true  },
+    { name: 'Emergency bivy',                   perPerson: false },
+    { name: 'Rope bag / tarp',                  perPerson: false },
+    { name: 'Guidebook or topo',                perPerson: false },
+    { name: 'Crash pad (for approach)',         perPerson: false },
   ],
   top_rope_climbing: [
-    { name: 'Climbing harness',             perPerson: true  },
-    { name: 'Helmet',                       perPerson: true  },
-    { name: 'Belay device + locking carabiner', perPerson: true },
-    { name: 'Chalk bag + chalk',            perPerson: true  },
-    { name: 'Climbing shoes',               perPerson: true  },
-    { name: 'Static or dynamic rope',       perPerson: false },
-    { name: 'Anchor webbing / cordelette',  perPerson: false },
-    { name: 'Locking carabiners (3+)',      perPerson: false },
-    { name: 'First aid kit',                perPerson: false },
-    { name: 'Water (2L+)',                  perPerson: true  },
-    { name: 'Snacks / nutrition',           perPerson: true  },
-    { name: 'Sun protection (hat, SPF)',    perPerson: true  },
-    { name: 'Approach shoes',              perPerson: true  },
-    { name: 'Headlamp',                    perPerson: true  },
-    { name: 'Rope bag',                    perPerson: false },
-    { name: 'Guidebook or topo',           perPerson: false },
+    { name: 'Climbing harness',                 perPerson: true  },
+    { name: 'Helmet',                           perPerson: true  },
+    { name: 'Belay device + locking carabiner', perPerson: true  },
+    { name: 'Chalk bag + chalk',                perPerson: true  },
+    { name: 'Climbing shoes',                   perPerson: true  },
+    { name: 'Static or dynamic rope',           perPerson: false },
+    { name: 'Anchor webbing / cordelette',      perPerson: false },
+    { name: 'Locking carabiners (3+)',          perPerson: false },
+    { name: 'First aid kit',                    perPerson: false },
+    { name: 'Water (2L+)',                      perPerson: true  },
+    { name: 'Snacks / nutrition',               perPerson: true  },
+    { name: 'Sun protection (hat, SPF)',        perPerson: true  },
+    { name: 'Approach shoes',                   perPerson: true  },
+    { name: 'Headlamp',                         perPerson: true  },
+    { name: 'Rope bag',                         perPerson: false },
+    { name: 'Guidebook or topo',                perPerson: false },
   ],
   bouldering: [
-    { name: 'Crash pads (2+)',             perPerson: false },
-    { name: 'Climbing shoes',              perPerson: true  },
-    { name: 'Chalk bag + chalk',           perPerson: true  },
-    { name: 'Brush for holds',             perPerson: false },
-    { name: 'Knee pads',                   perPerson: true  },
-    { name: 'First aid kit',               perPerson: false },
-    { name: 'Water (2L+)',                 perPerson: true  },
-    { name: 'Snacks / nutrition',          perPerson: true  },
-    { name: 'Sun protection',              perPerson: true  },
-    { name: 'Headlamp',                   perPerson: true  },
-    { name: 'Guidebook or topo',          perPerson: false },
-    { name: 'Backpack to carry crash pads', perPerson: false },
+    { name: 'Crash pads (2+)',                  perPerson: false },
+    { name: 'Climbing shoes',                   perPerson: true  },
+    { name: 'Chalk bag + chalk',                perPerson: true  },
+    { name: 'Brush for holds',                  perPerson: false },
+    { name: 'Knee pads',                        perPerson: true  },
+    { name: 'First aid kit',                    perPerson: false },
+    { name: 'Water (2L+)',                      perPerson: true  },
+    { name: 'Snacks / nutrition',               perPerson: true  },
+    { name: 'Sun protection',                   perPerson: true  },
+    { name: 'Headlamp',                         perPerson: true  },
+    { name: 'Guidebook or topo',                perPerson: false },
+    { name: 'Backpack to carry crash pads',     perPerson: false },
   ],
   hiking: [
-    { name: 'Trail map / GPS device',      perPerson: false },
-    { name: 'Navigation compass',          perPerson: false },
-    { name: 'Water (3L+)',                 perPerson: true  },
+    { name: 'Trail map / GPS device',           perPerson: false },
+    { name: 'Navigation compass',               perPerson: false },
+    { name: 'Water (3L+)',                      perPerson: true  },
     { name: 'Water filter / purification tabs', perPerson: false },
-    { name: 'Snacks / nutrition',          perPerson: true  },
-    { name: 'First aid kit',               perPerson: false },
-    { name: 'Hiking boots / trail shoes',  perPerson: true  },
-    { name: 'Trekking poles',              perPerson: true  },
-    { name: 'Rain jacket / poncho',        perPerson: true  },
-    { name: 'Sun protection (hat, SPF)',   perPerson: true  },
-    { name: 'Headlamp + extra batteries',  perPerson: true  },
-    { name: 'Emergency whistle',           perPerson: true  },
-    { name: 'Space / emergency blanket',   perPerson: true  },
-    { name: 'Knife / multi-tool',          perPerson: false },
-    { name: 'Layers (fleece/puffy)',       perPerson: true  },
-    { name: 'Gaiters (if muddy)',          perPerson: true  },
-    { name: 'Satellite communicator',      perPerson: false },
+    { name: 'Snacks / nutrition',               perPerson: true  },
+    { name: 'First aid kit',                    perPerson: false },
+    { name: 'Hiking boots / trail shoes',       perPerson: true  },
+    { name: 'Trekking poles',                   perPerson: true  },
+    { name: 'Rain jacket / poncho',             perPerson: true  },
+    { name: 'Sun protection (hat, SPF)',        perPerson: true  },
+    { name: 'Headlamp + extra batteries',       perPerson: true  },
+    { name: 'Emergency whistle',                perPerson: true  },
+    { name: 'Space / emergency blanket',        perPerson: true  },
+    { name: 'Knife / multi-tool',               perPerson: false },
+    { name: 'Layers (fleece/puffy)',            perPerson: true  },
+    { name: 'Gaiters (if muddy)',               perPerson: true  },
+    { name: 'Satellite communicator',           perPerson: false },
   ],
   backpacking: [
-    { name: 'Backpack (50–70L)',           perPerson: true  },
-    { name: 'Trail map / GPS device',      perPerson: false },
-    { name: 'Navigation compass',          perPerson: false },
+    { name: 'Backpack (50–70L)',                perPerson: true  },
+    { name: 'Trail map / GPS device',           perPerson: false },
+    { name: 'Navigation compass',               perPerson: false },
     { name: 'Water filter / purification tabs', perPerson: false },
-    { name: 'Water bottles / hydration bladder', perPerson: true },
-    { name: 'Backpacking stove + fuel',    perPerson: false },
-    { name: 'Cookpot + utensils',          perPerson: false },
-    { name: 'Food (3 days+)',              perPerson: true  },
-    { name: 'Bear canister / hang bag',    perPerson: false },
-    { name: 'Trekking poles',             perPerson: true  },
-    { name: 'Rain jacket / poncho',       perPerson: true  },
-    { name: 'Sun protection',             perPerson: true  },
-    { name: 'Headlamp + extra batteries', perPerson: true  },
-    { name: 'First aid kit',              perPerson: false },
-    { name: 'Knife / multi-tool',         perPerson: false },
-    { name: 'Layers (fleece/puffy)',      perPerson: true  },
-    { name: 'Gaiters',                   perPerson: true  },
-    { name: 'Satellite communicator',     perPerson: false },
-    { name: 'Leave No Trace essentials',  perPerson: false },
-    { name: 'Trowel',                    perPerson: false },
-    { name: 'Waste bags',                perPerson: true  },
+    { name: 'Water bottles / hydration bladder',perPerson: true  },
+    { name: 'Backpacking stove + fuel',         perPerson: false },
+    { name: 'Cookpot + utensils',               perPerson: false },
+    { name: 'Food (3 days+)',                   perPerson: true  },
+    { name: 'Bear canister / hang bag',         perPerson: false },
+    { name: 'Trekking poles',                   perPerson: true  },
+    { name: 'Rain jacket / poncho',             perPerson: true  },
+    { name: 'Sun protection',                   perPerson: true  },
+    { name: 'Headlamp + extra batteries',       perPerson: true  },
+    { name: 'First aid kit',                    perPerson: false },
+    { name: 'Knife / multi-tool',               perPerson: false },
+    { name: 'Layers (fleece/puffy)',            perPerson: true  },
+    { name: 'Gaiters',                          perPerson: true  },
+    { name: 'Satellite communicator',           perPerson: false },
+    { name: 'Leave No Trace essentials',        perPerson: false },
+    { name: 'Trowel',                           perPerson: false },
+    { name: 'Waste bags',                       perPerson: true  },
   ],
   scuba_diving: [
-    { name: 'BCD (buoyancy control device)', perPerson: true },
-    { name: 'Regulator + alternate air source', perPerson: true },
-    { name: 'Dive computer',              perPerson: true  },
-    { name: 'Wetsuit / drysuit',          perPerson: true  },
-    { name: 'Mask + snorkel',             perPerson: true  },
-    { name: 'Fins',                       perPerson: true  },
-    { name: 'Weight system + weights',    perPerson: true  },
-    { name: 'Dive tank (or rental)',      perPerson: true  },
-    { name: 'Underwater torch',           perPerson: true  },
-    { name: 'Surface marker buoy (SMB)', perPerson: true  },
-    { name: 'Dive flag',                 perPerson: false },
-    { name: 'Logbook + certification card', perPerson: true },
-    { name: 'Dive knife / shears',       perPerson: true  },
-    { name: 'Rash guard / thermal layer',perPerson: true  },
-    { name: 'Defog solution',            perPerson: true  },
-    { name: 'First aid / O2 kit',        perPerson: false },
-    { name: 'Waterproof bag',            perPerson: true  },
-    { name: 'Sun protection',            perPerson: true  },
-    { name: 'Water + hydration',         perPerson: true  },
+    { name: 'BCD (buoyancy control device)',    perPerson: true  },
+    { name: 'Regulator + alternate air source', perPerson: true  },
+    { name: 'Dive computer',                    perPerson: true  },
+    { name: 'Wetsuit / drysuit',                perPerson: true  },
+    { name: 'Mask + snorkel',                   perPerson: true  },
+    { name: 'Fins',                             perPerson: true  },
+    { name: 'Weight system + weights',          perPerson: true  },
+    { name: 'Dive tank (or rental)',            perPerson: true  },
+    { name: 'Underwater torch',                 perPerson: true  },
+    { name: 'Surface marker buoy (SMB)',        perPerson: true  },
+    { name: 'Dive flag',                        perPerson: false },
+    { name: 'Logbook + certification card',     perPerson: true  },
+    { name: 'Dive knife / shears',              perPerson: true  },
+    { name: 'Rash guard / thermal layer',       perPerson: true  },
+    { name: 'Defog solution',                   perPerson: true  },
+    { name: 'First aid / O2 kit',               perPerson: false },
+    { name: 'Waterproof bag',                   perPerson: true  },
+    { name: 'Sun protection',                   perPerson: true  },
+    { name: 'Water + hydration',                perPerson: true  },
   ],
   kayaking: [
-    { name: 'Kayak + paddle',            perPerson: true  },
-    { name: 'PFD (life jacket)',         perPerson: true  },
-    { name: 'Helmet (whitewater)',       perPerson: true  },
-    { name: 'Spray skirt',              perPerson: true  },
-    { name: 'Bilge pump',               perPerson: false },
-    { name: 'Paddle float',             perPerson: true  },
-    { name: 'Dry bags (waterproof)',    perPerson: true  },
-    { name: 'Wetsuit / paddling jacket',perPerson: true  },
-    { name: 'Water shoes / booties',    perPerson: true  },
-    { name: 'Headlamp',                perPerson: true  },
-    { name: 'Navigation / maps',       perPerson: false },
-    { name: 'First aid kit',           perPerson: false },
-    { name: 'Sun protection',          perPerson: true  },
-    { name: 'Water + hydration',       perPerson: true  },
-    { name: 'Snacks',                  perPerson: true  },
-    { name: 'Throw bag',              perPerson: false },
-    { name: 'Whistle',                perPerson: true  },
+    { name: 'Kayak + paddle',                   perPerson: true  },
+    { name: 'PFD (life jacket)',                perPerson: true  },
+    { name: 'Helmet (whitewater)',              perPerson: true  },
+    { name: 'Spray skirt',                      perPerson: true  },
+    { name: 'Bilge pump',                       perPerson: false },
+    { name: 'Paddle float',                     perPerson: true  },
+    { name: 'Dry bags (waterproof)',            perPerson: true  },
+    { name: 'Wetsuit / paddling jacket',        perPerson: true  },
+    { name: 'Water shoes / booties',            perPerson: true  },
+    { name: 'Headlamp',                         perPerson: true  },
+    { name: 'Navigation / maps',               perPerson: false },
+    { name: 'First aid kit',                    perPerson: false },
+    { name: 'Sun protection',                   perPerson: true  },
+    { name: 'Water + hydration',                perPerson: true  },
+    { name: 'Snacks',                           perPerson: true  },
+    { name: 'Throw bag',                        perPerson: false },
+    { name: 'Whistle',                          perPerson: true  },
   ],
   mountain_biking: [
-    { name: 'Mountain bike (tuned)',    perPerson: true  },
-    { name: 'Helmet',                  perPerson: true  },
-    { name: 'Gloves',                  perPerson: true  },
-    { name: 'Knee & elbow pads',       perPerson: true  },
-    { name: 'Eye protection / goggles',perPerson: true  },
-    { name: 'Hydration pack / bottles',perPerson: true  },
-    { name: 'Nutrition / snacks',      perPerson: true  },
-    { name: 'Bike multi-tool',         perPerson: false },
-    { name: 'Spare tubes + patch kit', perPerson: true  },
-    { name: 'Tire levers',            perPerson: false },
-    { name: 'Hand pump / CO2',        perPerson: true  },
-    { name: 'Chain lube',             perPerson: false },
-    { name: 'First aid kit',          perPerson: false },
-    { name: 'Sun protection',         perPerson: true  },
-    { name: 'GPS / trail map',        perPerson: false },
-    { name: 'Lights (front & rear)',  perPerson: true  },
-    { name: 'Phone mount',            perPerson: true  },
+    { name: 'Mountain bike (tuned)',            perPerson: true  },
+    { name: 'Helmet',                           perPerson: true  },
+    { name: 'Gloves',                           perPerson: true  },
+    { name: 'Knee & elbow pads',               perPerson: true  },
+    { name: 'Eye protection / goggles',         perPerson: true  },
+    { name: 'Hydration pack / bottles',         perPerson: true  },
+    { name: 'Nutrition / snacks',               perPerson: true  },
+    { name: 'Bike multi-tool',                  perPerson: false },
+    { name: 'Spare tubes + patch kit',          perPerson: true  },
+    { name: 'Tire levers',                      perPerson: false },
+    { name: 'Hand pump / CO2',                  perPerson: true  },
+    { name: 'Chain lube',                       perPerson: false },
+    { name: 'First aid kit',                    perPerson: false },
+    { name: 'Sun protection',                   perPerson: true  },
+    { name: 'GPS / trail map',                  perPerson: false },
+    { name: 'Lights (front & rear)',            perPerson: true  },
+    { name: 'Phone mount',                      perPerson: true  },
   ],
   skiing: [
-    { name: 'Skis / snowboard + bindings', perPerson: true },
-    { name: 'Boots',                  perPerson: true  },
-    { name: 'Poles (skiing)',         perPerson: true  },
-    { name: 'Helmet',                 perPerson: true  },
-    { name: 'Goggles',               perPerson: true  },
-    { name: 'Ski jacket + pants',    perPerson: true  },
-    { name: 'Base layers (thermal)', perPerson: true  },
-    { name: 'Gloves / mittens',      perPerson: true  },
-    { name: 'Neck gaiter / balaclava', perPerson: true },
-    { name: 'Ski socks (wool)',      perPerson: true  },
-    { name: 'Lift pass',             perPerson: true  },
-    { name: 'Avalanche beacon + probe + shovel', perPerson: true },
-    { name: 'Sunscreen (high SPF)', perPerson: true  },
-    { name: 'Lip balm (SPF)',       perPerson: true  },
-    { name: 'First aid kit',        perPerson: false },
-    { name: 'Backpack (day)',       perPerson: true  },
-    { name: 'Water + snacks',      perPerson: true  },
-    { name: 'Hand warmers',        perPerson: true  },
-    { name: 'Boot bag',            perPerson: true  },
+    { name: 'Skis / snowboard + bindings',     perPerson: true  },
+    { name: 'Boots',                            perPerson: true  },
+    { name: 'Poles (skiing)',                   perPerson: true  },
+    { name: 'Helmet',                           perPerson: true  },
+    { name: 'Goggles',                          perPerson: true  },
+    { name: 'Ski jacket + pants',              perPerson: true  },
+    { name: 'Base layers (thermal)',            perPerson: true  },
+    { name: 'Gloves / mittens',                perPerson: true  },
+    { name: 'Neck gaiter / balaclava',         perPerson: true  },
+    { name: 'Ski socks (wool)',                perPerson: true  },
+    { name: 'Lift pass',                        perPerson: true  },
+    { name: 'Avalanche beacon + probe + shovel',perPerson: true  },
+    { name: 'Sunscreen (high SPF)',            perPerson: true  },
+    { name: 'Lip balm (SPF)',                  perPerson: true  },
+    { name: 'First aid kit',                    perPerson: false },
+    { name: 'Backpack (day)',                   perPerson: true  },
+    { name: 'Water + snacks',                  perPerson: true  },
+    { name: 'Hand warmers',                     perPerson: true  },
+    { name: 'Boot bag',                         perPerson: true  },
   ],
   canyoneering: [
-    { name: 'Harness',                  perPerson: true  },
-    { name: 'Helmet',                   perPerson: true  },
-    { name: 'Rappel device (ATC)',      perPerson: true  },
-    { name: 'Locking carabiners (3+)', perPerson: true  },
-    { name: 'Static rope',             perPerson: false },
-    { name: 'Webbing / cordelette',    perPerson: false },
-    { name: 'Wetsuit (if wet canyon)', perPerson: true  },
-    { name: 'Canyon shoes / booties',  perPerson: true  },
-    { name: 'Dry bags',               perPerson: true  },
-    { name: 'Water (3L+)',            perPerson: true  },
-    { name: 'Water filter',           perPerson: false },
-    { name: 'Food / snacks',          perPerson: true  },
-    { name: 'First aid kit',          perPerson: false },
-    { name: 'Knife / shears',         perPerson: false },
-    { name: 'Headlamp',              perPerson: true  },
-    { name: 'Sun protection',        perPerson: true  },
-    { name: 'Satellite communicator',perPerson: false },
-    { name: 'Canyon topo / guidebook',perPerson: false },
+    { name: 'Harness',                          perPerson: true  },
+    { name: 'Helmet',                           perPerson: true  },
+    { name: 'Rappel device (ATC)',              perPerson: true  },
+    { name: 'Locking carabiners (3+)',          perPerson: true  },
+    { name: 'Static rope',                      perPerson: false },
+    { name: 'Webbing / cordelette',             perPerson: false },
+    { name: 'Wetsuit (if wet canyon)',          perPerson: true  },
+    { name: 'Canyon shoes / booties',           perPerson: true  },
+    { name: 'Dry bags',                         perPerson: true  },
+    { name: 'Water (3L+)',                      perPerson: true  },
+    { name: 'Water filter',                     perPerson: false },
+    { name: 'Food / snacks',                    perPerson: true  },
+    { name: 'First aid kit',                    perPerson: false },
+    { name: 'Knife / shears',                   perPerson: false },
+    { name: 'Headlamp',                         perPerson: true  },
+    { name: 'Sun protection',                   perPerson: true  },
+    { name: 'Satellite communicator',           perPerson: false },
+    { name: 'Canyon topo / guidebook',          perPerson: false },
   ],
 };
 
 const CAMPING_SUPPLIES = [
-  { name: 'Tent + stakes + guylines',        perPerson: false },
-  { name: 'Sleeping bag (season-appropriate)', perPerson: true },
-  { name: 'Sleeping pad',                     perPerson: true  },
-  { name: 'Camp stove + fuel canister',       perPerson: false },
-  { name: 'Cookpot + utensils',              perPerson: false },
-  { name: 'Camp mug',                        perPerson: true  },
-  { name: 'Food (all meals)',                perPerson: true  },
-  { name: 'Bear canister / hang kit',        perPerson: false },
-  { name: 'Lantern or extra headlamps',      perPerson: false },
-  { name: 'Camp chair / sitting pad',        perPerson: true  },
-  { name: 'Camp soap + scrubber',            perPerson: false },
-  { name: 'Trash bags',                      perPerson: false },
-  { name: 'Trowel + waste bags',            perPerson: false },
-  { name: 'Camp towel',                      perPerson: true  },
-  { name: 'Clothes for extra days',          perPerson: true  },
-  { name: 'Warm layers for evenings',        perPerson: true  },
+  { name: 'Tent + stakes + guylines',          perPerson: false },
+  { name: 'Sleeping bag (season-appropriate)', perPerson: true  },
+  { name: 'Sleeping pad',                      perPerson: true  },
+  { name: 'Camp stove + fuel canister',        perPerson: false },
+  { name: 'Cookpot + utensils',               perPerson: false },
+  { name: 'Camp mug',                          perPerson: true  },
+  { name: 'Food (all meals)',                  perPerson: true  },
+  { name: 'Bear canister / hang kit',          perPerson: false },
+  { name: 'Lantern or extra headlamps',        perPerson: false },
+  { name: 'Camp chair / sitting pad',          perPerson: true  },
+  { name: 'Camp soap + scrubber',              perPerson: false },
+  { name: 'Trash bags',                        perPerson: false },
+  { name: 'Trowel + waste bags',              perPerson: false },
+  { name: 'Camp towel',                        perPerson: true  },
+  { name: 'Clothes for extra days',            perPerson: true  },
+  { name: 'Warm layers for evenings',          perPerson: true  },
 ];
 
 const TYPE_LABELS = {
-  lead_climbing: 'Lead Climbing',
-  top_rope_climbing: 'Top Rope Climbing',
-  bouldering: 'Bouldering',
-  hiking: 'Hiking',
-  backpacking: 'Backpacking',
-  scuba_diving: 'Scuba Diving',
-  kayaking: 'Kayaking',
-  mountain_biking: 'Mountain Biking',
-  skiing: 'Skiing / Snowboarding',
-  canyoneering: 'Canyoneering',
+  lead_climbing:    'Lead Climbing',
+  top_rope_climbing:'Top Rope Climbing',
+  bouldering:       'Bouldering',
+  hiking:           'Hiking',
+  backpacking:      'Backpacking',
+  scuba_diving:     'Scuba Diving',
+  kayaking:         'Kayaking',
+  mountain_biking:  'Mountain Biking',
+  skiing:           'Skiing / Snowboarding',
+  canyoneering:     'Canyoneering',
 };
 
 const TYPE_EMOJI = {
-  lead_climbing: '🧗',
-  top_rope_climbing: '🧗',
-  bouldering: '🪨',
-  hiking: '🥾',
-  backpacking: '🎒',
-  scuba_diving: '🤿',
-  kayaking: '🛶',
-  mountain_biking: '🚵',
-  skiing: '⛷️',
-  canyoneering: '🏜️',
+  lead_climbing:    '🧗',
+  top_rope_climbing:'🧗',
+  bouldering:       '🪨',
+  hiking:           '🥾',
+  backpacking:      '🎒',
+  scuba_diving:     '🤿',
+  kayaking:         '🛶',
+  mountain_biking:  '🚵',
+  skiing:           '⛷️',
+  canyoneering:     '🏜️',
 };
 
+// ── Trip ID generator ────────────────────────────────────────────
+// Generates a short human-friendly ID like "TW-A3K9"
+function generateTripId() {
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // no confusable chars (0/O, 1/I)
+  let id = 'TW-';
+  for (let i = 0; i < 4; i++) {
+    id += chars[Math.floor(Math.random() * chars.length)];
+  }
+  return id;
+}
+
 // ── App state ────────────────────────────────────────────────────
-let db             = null;
-let currentTrip    = null;
-let currentUser    = null;
-let campingOn      = false;
-let groupSize      = 1;
-let tripUnsubscribe  = null;
-let homeUnsubscribe  = null;
+let db              = null;
+let currentTrip     = null;   // Firestore doc ID (= tripId e.g. "TW-A3K9")
+let currentUser     = null;
+let campingOn       = false;
+let groupSize       = 1;
+let tripUnsubscribe = null;
+let homeUnsubscribe = null;
 
 // Modal state
-let modalItemId    = null;
-let modalMaxQty    = 1;
+let modalItemId     = null;
+let modalMaxQty     = 1;
 let modalCurrentQty = 1;
 
-// ── Helpers ──────────────────────────────────────────────────────
-
-/** Build an item object from a supply preset + current member count */
+// ── Item helpers ─────────────────────────────────────────────────
 function makeItem(preset, memberCount, index) {
   const name      = typeof preset === 'string' ? preset : preset.name;
   const perPerson = typeof preset === 'object' && preset.perPerson;
@@ -284,33 +289,27 @@ function makeItem(preset, memberCount, index) {
     id:        'item_' + Date.now() + '_' + index,
     name,
     perPerson: !!perPerson,
-    qty,                  // total units needed
-    claims: [],           // [{ user, qty, comment }]
+    qty,
+    claims:    [],
   };
 }
 
-/** How many units of an item are still unclaimed */
 function remainingQty(item) {
   const claimed = (item.claims || []).reduce((s, c) => s + (c.qty || 1), 0);
   return Math.max(0, (item.qty || 1) - claimed);
 }
 
-/** Whether an item is fully covered */
 function isCovered(item) {
   return remainingQty(item) === 0;
 }
 
-/** Recompute per-person quantities when member count changes */
 function rescaleItems(items, newMemberCount) {
   return items.map(item => {
     if (!item.perPerson) return item;
-    const oldQty   = item.qty || 1;
-    const newQty   = newMemberCount;
-    // Scale claimed quantities proportionally (floor, never below 0)
-    const claims   = (item.claims || []).map(c => ({
-      ...c,
-      qty: Math.max(0, Math.min(c.qty, newQty)),
-    })).filter(c => c.qty > 0);
+    const newQty = newMemberCount;
+    const claims = (item.claims || [])
+      .map(c => ({ ...c, qty: Math.max(0, Math.min(c.qty, newQty)) }))
+      .filter(c => c.qty > 0);
     return { ...item, qty: newQty, claims };
   });
 }
@@ -380,10 +379,12 @@ function subscribeHome() {
         const covered = items.filter(i => isCovered(i)).length;
         const total   = items.length;
         const pct     = total ? Math.round(covered / total * 100) : 0;
-        const tripName = doc.id;
-        return `<span class="trip-pill" onclick="quickViewTrip('${tripName.replace(/'/g, "\\'")}')">
+        const tripId  = doc.id; // doc ID is the tripId
+        return `<span class="trip-pill" onclick="quickViewTrip('${tripId}')">
           <span class="pill-dot"></span>
-          ${TYPE_EMOJI[t.type] || '🗺️'} ${tripName} · ${pct}% packed
+          ${TYPE_EMOJI[t.type] || '🗺️'} ${t.name || tripId}
+          <span class="pill-id">${tripId}</span>
+          · ${pct}% packed
         </span>`;
       }).join('');
     }, err => console.error('Home listener error:', err));
@@ -432,30 +433,35 @@ async function createTrip() {
   btn.textContent = 'Creating…';
 
   try {
-    const existing = await db.collection('trips').doc(tripName).get();
-    if (existing.exists) {
-      toggleErr('err-trip-name', true, 'A trip with this name already exists.');
-      return;
+    // Generate a unique Trip ID, retry if collision (extremely rare)
+    let tripId;
+    let exists = true;
+    while (exists) {
+      tripId = generateTripId();
+      const check = await db.collection('trips').doc(tripId).get();
+      exists = check.exists;
     }
 
     const presets = [...(BASE_SUPPLIES[tripType] || [])];
     if (campingOn) presets.push(...CAMPING_SUPPLIES);
-
     const items = presets.map((preset, i) => makeItem(preset, groupSize, i));
 
     const tripData = {
-      type:       tripType,
-      camping:    campingOn,
-      creator:    yourName,
-      members:    [yourName],
+      tripId,                   // stored as a field too for easy querying
+      name:     tripName,       // human-readable name, stored in doc
+      type:     tripType,
+      camping:  campingOn,
+      creator:  yourName,
+      members:  [yourName],
       groupSize,
       items,
-      createdAt:  firebase.firestore.FieldValue.serverTimestamp(),
+      createdAt: firebase.firestore.FieldValue.serverTimestamp(),
     };
 
-    await db.collection('trips').doc(tripName).set(tripData);
+    // Doc ID = tripId
+    await db.collection('trips').doc(tripId).set(tripData);
 
-    currentTrip = tripName;
+    currentTrip = tripId;
     currentUser = yourName;
     campingOn   = false;
     groupSize   = 1;
@@ -477,44 +483,42 @@ async function createTrip() {
   }
 }
 
-// ── Join trip ────────────────────────────────────────────────────
+// ── Join trip (by Trip ID) ───────────────────────────────────────
 async function joinTrip() {
-  const tripName = document.getElementById('join-trip-name').value.trim();
+  const rawId    = document.getElementById('join-trip-id').value.trim().toUpperCase();
   const yourName = document.getElementById('join-your-name').value.trim();
   let ok = true;
 
   const toggleErr = (id, show) => document.getElementById(id).classList.toggle('show', show);
-  if (!tripName) { toggleErr('err-join-trip', true); ok = false; }
+  if (!rawId)   { toggleErr('err-join-trip', true); ok = false; }
   else toggleErr('err-join-trip', false);
-  if (!yourName) { toggleErr('err-join-name', true); ok = false; }
+  if (!yourName){ toggleErr('err-join-name', true); ok = false; }
   else toggleErr('err-join-name', false);
   if (!ok) return;
   if (!db) { toast('⚠️ Firebase not configured'); return; }
 
-  const snap = await db.collection('trips').doc(tripName).get();
+  const snap = await db.collection('trips').doc(rawId).get();
   if (!snap.exists) {
     document.getElementById('err-join-trip').classList.add('show');
     return;
   }
 
-  const trip = snap.data();
+  const trip         = snap.data();
   const alreadyMember = (trip.members || []).includes(yourName);
 
   if (!alreadyMember) {
     const newMembers = [...(trip.members || []), yourName];
-    const newCount   = newMembers.length;
-    // Rescale per-person items to new member count
-    const rescaled   = rescaleItems(trip.items || [], newCount);
-    await db.collection('trips').doc(tripName).update({
+    const rescaled   = rescaleItems(trip.items || [], newMembers.length);
+    await db.collection('trips').doc(rawId).update({
       members:   firebase.firestore.FieldValue.arrayUnion(yourName),
-      groupSize: newCount,
+      groupSize: newMembers.length,
       items:     rescaled,
     });
   }
 
-  currentTrip = tripName;
+  currentTrip = rawId;
   currentUser = yourName;
-  document.getElementById('join-trip-name').value = '';
+  document.getElementById('join-trip-id').value  = '';
   document.getElementById('join-your-name').value = '';
   document.getElementById('err-join-trip').classList.remove('show');
 
@@ -523,19 +527,19 @@ async function joinTrip() {
 }
 
 // ── Quick view from home ─────────────────────────────────────────
-function quickViewTrip(name) {
+function quickViewTrip(tripId) {
   const user = prompt("Welcome back! What's your name?");
   if (!user || !user.trim()) return;
   currentUser = user.trim();
-  currentTrip = name;
+  currentTrip = tripId;
   if (db) {
-    db.collection('trips').doc(name).get().then(snap => {
+    db.collection('trips').doc(tripId).get().then(snap => {
       if (!snap.exists) return;
       const trip = snap.data();
       if (!(trip.members || []).includes(currentUser)) {
         const newMembers = [...(trip.members || []), currentUser];
         const rescaled   = rescaleItems(trip.items || [], newMembers.length);
-        db.collection('trips').doc(name).update({
+        db.collection('trips').doc(tripId).update({
           members:   firebase.firestore.FieldValue.arrayUnion(currentUser),
           groupSize: newMembers.length,
           items:     rescaled,
@@ -552,12 +556,17 @@ function renderTrip(trip) {
   const emoji   = TYPE_EMOJI[trip.type] || '🗺️';
   const items   = trip.items || [];
   const members = trip.members || [];
+  const tripId  = trip.tripId || currentTrip;
+
+  // Update footer Trip ID display
+  const footerEl = document.getElementById('footer-trip-id');
+  if (footerEl) footerEl.textContent = tripId;
 
   // Header
   document.getElementById('trip-header-block').innerHTML = `
     <div class="trip-header" data-type-emoji="${emoji}">
       <div class="trip-type-badge">${emoji} ${TYPE_LABELS[trip.type] || trip.type}${trip.camping ? ' · 🏕️ Camping' : ''}</div>
-      <div class="trip-name-big">${currentTrip}</div>
+      <div class="trip-name-big">${trip.name || currentTrip}</div>
       <div class="trip-meta">
         <span>👤 You're ${currentUser}</span>
         <span>👥 ${members.length} member${members.length !== 1 ? 's' : ''}</span>
@@ -596,17 +605,17 @@ function renderTrip(trip) {
   // Needed list
   document.getElementById('needed-list').innerHTML = neededItems.length
     ? neededItems.map(item => {
-        const rem        = remainingQty(item);
-        const total      = item.qty || 1;
-        const partial    = (item.claims || []).length > 0; // some claimed but not all
-        const qtyLabel   = total > 1 ? `<span class="item-qty-badge">${rem}/${total} needed</span>` : '';
-        const ppLabel    = item.perPerson ? `<span class="per-person-badge">per person</span>` : '';
-        // Partial claims summary
+        const rem      = remainingQty(item);
+        const total    = item.qty || 1;
+        const partial  = (item.claims || []).length > 0;
+        const qtyLabel = total > 1
+          ? `<span class="item-qty-badge">${rem}/${total} needed</span>` : '';
+        const ppLabel  = item.perPerson
+          ? `<span class="per-person-badge">per person</span>` : '';
         const partialInfo = partial
           ? `<div class="partial-claims">${(item.claims || []).map(c =>
               `<span class="partial-chip">✓ ${c.user} ×${c.qty}${c.comment ? ` — "${c.comment}"` : ''}</span>`
-            ).join('')}</div>`
-          : '';
+            ).join('')}</div>` : '';
         return `
           <div class="supply-item">
             <div class="supply-check ${partial ? 'partial' : ''}" onclick="openClaimModal('${item.id}')" title="I'm bringing this!">
@@ -626,10 +635,10 @@ function renderTrip(trip) {
   // Covered list
   document.getElementById('covered-list').innerHTML = coveredItems.length
     ? coveredItems.map(item => {
-        const total     = item.qty || 1;
-        const claims    = item.claims || [];
+        const total      = item.qty || 1;
+        const claims     = item.claims || [];
         const myClaimIdx = claims.findIndex(c => c.user === currentUser);
-        const qtyLabel  = total > 1
+        const qtyLabel   = total > 1
           ? `<span class="item-qty-badge covered">${total}/${total} ✓</span>` : '';
         return `
           <div class="supply-item">
@@ -647,8 +656,7 @@ function renderTrip(trip) {
             ${myClaimIdx !== -1
               ? `<div class="supply-actions">
                    <button class="icon-btn del" onclick="unclaimItem('${item.id}')" title="Unclaim my portion">↩</button>
-                 </div>`
-              : ''}
+                 </div>` : ''}
           </div>`;
       }).join('')
     : '<div style="padding:20px;text-align:center;font-size:14px;color:var(--text-muted)">Nothing claimed yet — grab some gear!</div>';
@@ -656,10 +664,9 @@ function renderTrip(trip) {
 
 // ── Modal ────────────────────────────────────────────────────────
 function openClaimModal(itemId) {
-  // Get current trip data from Firestore snapshot (we re-fetch to be safe)
   db.collection('trips').doc(currentTrip).get().then(snap => {
-    const trip   = snap.data();
-    const item   = (trip.items || []).find(i => i.id === itemId);
+    const trip = snap.data();
+    const item = (trip.items || []).find(i => i.id === itemId);
     if (!item) return;
 
     const rem = remainingQty(item);
@@ -674,7 +681,6 @@ function openClaimModal(itemId) {
     document.getElementById('modal-qty-max').textContent   = `of ${rem} needed`;
     document.getElementById('modal-comment').value         = '';
 
-    // Show qty stepper only for multi-qty items
     const qtySection = document.getElementById('modal-qty-section');
     qtySection.style.display = (item.qty || 1) > 1 ? 'block' : 'none';
 
@@ -689,7 +695,6 @@ function changeQty(delta) {
 }
 
 function closeModal(event) {
-  // Close only if clicking backdrop or cancel button (not inside modal-box)
   if (event && event.target.closest('.modal-box')) return;
   document.getElementById('claim-modal').classList.remove('open');
   modalItemId = null;
@@ -703,7 +708,6 @@ async function confirmClaim() {
   await updateItems(items => {
     const item = items.find(i => i.id === modalItemId);
     if (!item) return;
-    // Remove any existing claim by this user first (re-claiming updates it)
     item.claims = (item.claims || []).filter(c => c.user !== currentUser);
     item.claims.push({ user: currentUser, qty, comment });
   });
@@ -738,19 +742,18 @@ async function removeItem(itemId) {
 }
 
 async function addItem() {
-  const input   = document.getElementById('new-item-input');
-  const qtySel  = document.getElementById('new-item-qty');
-  const val     = input.value.trim();
+  const input  = document.getElementById('new-item-input');
+  const qtySel = document.getElementById('new-item-qty');
+  const val    = input.value.trim();
   if (!val) return;
 
-  let qtyRaw    = parseInt(qtySel.value, 10);
+  const qtyRaw      = parseInt(qtySel.value, 10);
   const isPerPerson = qtyRaw === 0;
+  let finalQty      = isPerPerson ? 1 : qtyRaw;
 
-  // Get current member count for per-person items
-  let finalQty = isPerPerson ? 1 : qtyRaw;
   if (isPerPerson && db && currentTrip) {
-    const snap   = await db.collection('trips').doc(currentTrip).get();
-    finalQty     = (snap.data().members || []).length;
+    const snap = await db.collection('trips').doc(currentTrip).get();
+    finalQty   = (snap.data().members || []).length;
   }
 
   await updateItems(items => {
@@ -763,8 +766,8 @@ async function addItem() {
     });
   });
 
-  input.value      = '';
-  qtySel.value     = '1';
+  input.value    = '';
+  qtySel.value   = '1';
   toast('Item added!');
 }
 
@@ -775,8 +778,10 @@ function leaveTrip() {
   showScreen('home');
 }
 
-function copyTripName() {
-  navigator.clipboard.writeText(currentTrip).then(() => toast('📋 Trip name copied!'));
+function copyTripId() {
+  const tripId = currentTrip;
+  if (!tripId) return;
+  navigator.clipboard.writeText(tripId).then(() => toast('📋 Trip ID copied!'));
 }
 
 // ── Toast ────────────────────────────────────────────────────────

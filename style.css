@@ -363,7 +363,51 @@ textarea { resize: vertical; min-height: 70px; line-height: 1.5; }
 .btn-ghost { background: transparent; color: var(--text-muted); font-family: 'DM Sans', sans-serif; font-size: 14px; }
 .btn-ghost:hover { color: var(--text); }
 .btn-row { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; margin-top: 8px; }
-.trip-footer-actions { margin-top: 20px; display: flex; gap: 12px; flex-wrap: wrap; }
+.trip-footer-actions {
+  margin-top: 20px;
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+/* Trip ID display box */
+.trip-id-box {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--card-bg);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  padding: 10px 16px;
+  flex-wrap: wrap;
+}
+.trip-id-label {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  color: var(--stone);
+}
+.trip-id-value {
+  font-family: 'Syne', sans-serif;
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--forest);
+  letter-spacing: 3px;
+}
+
+/* Trip ID chip on home pills */
+.pill-id {
+  font-family: 'Syne', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  color: var(--forest-light);
+  background: rgba(74,140,92,0.1);
+  border-radius: 100px;
+  padding: 1px 7px;
+}
 
 /* ── Trip header ───────────────────────────────────────────────── */
 .trip-header {
