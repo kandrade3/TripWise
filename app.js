@@ -607,6 +607,15 @@ function renderTrip(trip) {
       <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
     </div>`;
 
+  // Leave / delete self button (non-creators only)
+  const isCreator = currentUser === trip.creator;
+  document.getElementById('leave-trip-btn-wrap').innerHTML = isCreator
+    ? `<button class="btn btn-ghost btn-sm" onclick="leaveTrip()">← All Trips</button>`
+    : `<div style="display:flex;gap:10px;align-items:center;">
+        <button class="btn btn-ghost btn-sm" onclick="leaveTrip()">← All Trips</button>
+        <button class="btn btn-leave btn-sm" onclick="leaveAndDeleteSelf()">🚪 Leave Trip</button>
+       </div>`;
+
   document.getElementById('needed-count').textContent  = neededItems.length;
   document.getElementById('covered-count').textContent = coveredItems.length;
 
@@ -969,4 +978,36 @@ async function deleteMember(memberName) {
   });
 
   toast(`🗑️ ${memberName} removed from trip.`);
+}
+
+// ── Leave & delete self from trip ────────────────────────────────
+async function leaveAndDeleteSelf() {
+  if (!confirm("Leave this trip? Your claimed gear will be unclaimed and you'll be removed from the crew.")) return;
+
+  const snap  = await db.collection('trips').doc(currentTrip).get();
+  const trip  = snap.data();
+
+  const newMembers = (trip.members || []).filter(m => m !== currentUser);
+
+  // Unclaim all items claimed by this user
+  const newItems = (trip.items || []).map(item => ({
+    ...item,
+    claims: (item.claims || []).filter(c => c.user !== currentUser)
+  }));
+
+  // Rescale per-person items to new member count
+  const rescaled = rescaleItems(newItems, newMembers.length);
+
+  await db.collection('trips').doc(currentTrip).update({
+    members:   newMembers,
+    groupSize: newMembers.length,
+    items:     rescaled,
+  });
+
+  // Navigate home
+  if (tripUnsubscribe) { tripUnsubscribe(); tripUnsubscribe = null; }
+  currentTrip = null;
+  currentUser = null;
+  showScreen('home');
+  toast('You have left the trip.');
 }
