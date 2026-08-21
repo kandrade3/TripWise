@@ -787,3 +787,15 @@ textarea { resize: vertical; min-height: 70px; line-height: 1.5; }
 .chip-btn:hover { opacity: 1; }
 .chip-btn.rename-btn:hover { background: rgba(255,255,255,0.2); }
 .chip-btn.delete-btn:hover { background: rgba(196,89,42,0.35); color: #ffb8a0; }
+
+/* ── Leave trip button ─────────────────────────────────────────── */
+.btn-leave {
+  background: #fce8e4;
+  color: var(--rust);
+  border: 1.5px solid rgba(196,89,42,0.2);
+  font-family: 'DM Sans', sans-serif;
+}
+.btn-leave:hover {
+  background: #f9d5cf;
+  box-shadow: 0 4px 12px rgba(196,89,42,0.15);
+}
