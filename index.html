@@ -39,6 +39,50 @@
   </div>
 </div>
 
+<!-- Edit modal -->
+<div id="edit-modal" class="modal-backdrop" onclick="closeEditModal(event)">
+  <div class="modal-box">
+    <div class="modal-title">Edit Item</div>
+    <div class="modal-section">
+      <label class="modal-label">Item Name</label>
+      <input type="text" id="edit-item-name" placeholder="Item name">
+    </div>
+    <div class="modal-section">
+      <label class="modal-label">Total Quantity Needed</label>
+      <div class="qty-stepper">
+        <button class="qty-btn" onclick="changeEditQty(-1)">−</button>
+        <span class="qty-display" id="edit-qty-val">1</span>
+        <button class="qty-btn" onclick="changeEditQty(1)">+</button>
+      </div>
+      <div class="edit-per-person-row">
+        <label class="edit-pp-label" onclick="toggleEditPerPerson()">
+          <span class="edit-pp-checkbox" id="edit-pp-checkbox"></span>
+          Scale with crew size (per person)
+        </label>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-primary btn-sm" onclick="confirmEdit()">Save Changes</button>
+      <button class="btn btn-ghost btn-sm" onclick="closeEditModal()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- Rename member modal -->
+<div id="rename-modal" class="modal-backdrop" onclick="closeRenameModal(event)">
+  <div class="modal-box">
+    <div class="modal-title">Edit Your Name</div>
+    <div class="modal-section">
+      <label class="modal-label">New Name</label>
+      <input type="text" id="rename-input" placeholder="Enter your name" onkeydown="if(event.key==='Enter') confirmRename()">
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-primary btn-sm" onclick="confirmRename()">Save</button>
+      <button class="btn btn-ghost btn-sm" onclick="closeRenameModal()">Cancel</button>
+    </div>
+  </div>
+</div>
 <!-- Header -->
 <header>
   <div class="header-inner">
