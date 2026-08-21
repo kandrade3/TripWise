@@ -575,9 +575,16 @@ function renderTrip(trip) {
       </div>
       <div class="members-bar">
         <span style="font-size:12px;color:rgba(232,223,200,0.6);margin-right:4px">Crew:</span>
-        ${members.map(m =>
-          `<span class="member-chip${m === trip.creator ? ' creator' : ''}">${m}${m === trip.creator ? ' ★' : ''}</span>`
-        ).join('')}
+        ${members.map(m => {
+          const isCreator = m === trip.creator;
+          const isMe = m === currentUser;
+          const canDelete = currentUser === trip.creator && !isMe && !isCreator;
+          return `<span class="member-chip${isCreator ? ' creator' : ''}">
+            ${m}${isCreator ? ' ★' : ''}
+            ${isMe ? `<button class="chip-btn rename-btn" onclick="openRenameModal()" title="Edit your name">✎</button>` : ''}
+            ${canDelete ? `<button class="chip-btn delete-btn" onclick="deleteMember('${m}')" title="Remove from trip">✕</button>` : ''}
+          </span>`;
+        }).join('')}
       </div>
     </div>`;
 
@@ -627,6 +634,7 @@ function renderTrip(trip) {
               ${partialInfo}
             </div>
             <div class="supply-actions">
+              <button class="icon-btn" onclick="openEditModal('${item.id}')" title="Edit">✎</button>
               <button class="icon-btn del" onclick="removeItem('${item.id}')" title="Remove">✕</button>
             </div>
           </div>`;
@@ -795,3 +803,170 @@ function toast(msg) {
 
 // ── Boot ─────────────────────────────────────────────────────────
 initFirebase();
+// ── Edit modal ───────────────────────────────────────────────────
+let editItemId      = null;
+let editQtyVal      = 1;
+let editPerPerson   = false;
+
+function openEditModal(itemId) {
+  db.collection('trips').doc(currentTrip).get().then(snap => {
+    const item = (snap.data().items || []).find(i => i.id === itemId);
+    if (!item) return;
+
+    editItemId    = itemId;
+    editQtyVal    = item.qty || 1;
+    editPerPerson = !!item.perPerson;
+
+    document.getElementById('edit-item-name').value    = item.name;
+    document.getElementById('edit-qty-val').textContent = editQtyVal;
+    updateEditPerPersonUI();
+
+    document.getElementById('edit-modal').classList.add('open');
+    setTimeout(() => document.getElementById('edit-item-name').focus(), 100);
+  });
+}
+
+function changeEditQty(delta) {
+  editQtyVal = Math.max(1, editQtyVal + delta);
+  document.getElementById('edit-qty-val').textContent = editQtyVal;
+}
+
+function toggleEditPerPerson() {
+  editPerPerson = !editPerPerson;
+  // If switching to per-person, set qty to current member count
+  if (editPerPerson && db && currentTrip) {
+    db.collection('trips').doc(currentTrip).get().then(snap => {
+      const memberCount = (snap.data().members || []).length;
+      editQtyVal = memberCount;
+      document.getElementById('edit-qty-val').textContent = editQtyVal;
+    });
+  }
+  updateEditPerPersonUI();
+}
+
+function updateEditPerPersonUI() {
+  const checkbox = document.getElementById('edit-pp-checkbox');
+  checkbox.classList.toggle('checked', editPerPerson);
+}
+
+function closeEditModal(event) {
+  if (event && event.target.closest('.modal-box')) return;
+  document.getElementById('edit-modal').classList.remove('open');
+  editItemId = null;
+}
+
+async function confirmEdit() {
+  if (!editItemId) return;
+  const newName = document.getElementById('edit-item-name').value.trim();
+  if (!newName) { document.getElementById('edit-item-name').focus(); return; }
+
+  await updateItems(items => {
+    const item = items.find(i => i.id === editItemId);
+    if (!item) return;
+    item.name      = newName;
+    item.qty       = editQtyVal;
+    item.perPerson = editPerPerson;
+    // Clamp any existing claims so they don't exceed the new qty
+    const totalClaimed = (item.claims || []).reduce((s, c) => s + (c.qty || 1), 0);
+    if (totalClaimed > editQtyVal) {
+      // Reduce claims from the end until we fit
+      let remaining = editQtyVal;
+      item.claims = item.claims.map(c => {
+        const allowed = Math.min(c.qty, remaining);
+        remaining -= allowed;
+        return { ...c, qty: allowed };
+      }).filter(c => c.qty > 0);
+    }
+  });
+
+  document.getElementById('edit-modal').classList.remove('open');
+  editItemId = null;
+  toast('✏️ Item updated!');
+}
+
+// ── Rename member ────────────────────────────────────────────────
+function openRenameModal() {
+  document.getElementById('rename-input').value = currentUser;
+  document.getElementById('rename-modal').classList.add('open');
+  setTimeout(() => {
+    const input = document.getElementById('rename-input');
+    input.focus();
+    input.select();
+  }, 100);
+}
+
+function closeRenameModal(event) {
+  if (event && event.target.closest('.modal-box')) return;
+  document.getElementById('rename-modal').classList.remove('open');
+}
+
+async function confirmRename() {
+  const newName = document.getElementById('rename-input').value.trim();
+  if (!newName || newName === currentUser) {
+    closeRenameModal();
+    return;
+  }
+
+  const snap    = await db.collection('trips').doc(currentTrip).get();
+  const trip    = snap.data();
+  const members = trip.members || [];
+
+  if (members.includes(newName)) {
+    toast('⚠️ That name is already taken on this trip.');
+    return;
+  }
+
+  const oldName = currentUser;
+
+  // Update members array
+  const newMembers = members.map(m => m === oldName ? newName : m);
+
+  // Update creator if they renamed themselves
+  const newCreator = trip.creator === oldName ? newName : trip.creator;
+
+  // Reassign all item claims from old name to new name
+  const newItems = (trip.items || []).map(item => ({
+    ...item,
+    claims: (item.claims || []).map(c =>
+      c.user === oldName ? { ...c, user: newName } : c
+    )
+  }));
+
+  await db.collection('trips').doc(currentTrip).update({
+    members: newMembers,
+    creator: newCreator,
+    items:   newItems,
+  });
+
+  currentUser = newName;
+  document.getElementById('rename-modal').classList.remove('open');
+  toast(`✓ Name updated to ${newName}!`);
+}
+
+// ── Delete member (creator only) ─────────────────────────────────
+async function deleteMember(memberName) {
+  if (!confirm(`Remove ${memberName} from the trip? Their claimed gear will be unclaimed.`)) return;
+
+  const snap  = await db.collection('trips').doc(currentTrip).get();
+  const trip  = snap.data();
+
+  // Remove from members list
+  const newMembers = (trip.members || []).filter(m => m !== memberName);
+
+  // Unclaim all items claimed by this member
+  const newItems = (trip.items || []).map(item => ({
+    ...item,
+    claims: (item.claims || []).filter(c => c.user !== memberName)
+  }));
+
+  // Rescale per-person items to new member count
+  const rescaled = rescaleItems(newItems, newMembers.length);
+
+  await db.collection('trips').doc(currentTrip).update({
+    members:   newMembers,
+    groupSize: newMembers.length,
+    items:     rescaled,
+  });
+
+  toast(`🗑️ ${memberName} removed from trip.`);
+}
